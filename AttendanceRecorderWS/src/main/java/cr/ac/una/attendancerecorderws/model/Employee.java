@@ -14,13 +14,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "RELOJUNA_EMPLOYEES")
@@ -38,90 +37,91 @@ public class Employee implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_EMPLOYEES_SEQ01")
     @SequenceGenerator(name = "RELOJUNA_EMPLOYEES_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_EMPLOYEES_SEQ01", allocationSize = 1)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EMPLOYEE_ID")
     private Long id;
 
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "EMPLOYEE_ID_CARD")
+    @Column(name = "EMPLOYEE_ID_CARD", length = 20)
     private String idCard;
 
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "EMPLOYEE_FOL")
+    @Column(name = "EMPLOYEE_FOL", length = 20)
     private String fol;
 
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "EMPLOYEE_NAME")
+    @Column(name = "EMPLOYEE_NAME", length = 50)
     private String name;
 
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "EMPLOYEE_FIRST_SURNAME")
+    @Column(name = "EMPLOYEE_FIRST_SURNAME", length = 50)
     private String firstSurname;
 
-    @Size(max = 50)
-    @Column(name = "EMPLOYEE_SECOND_SURNAME")
+    @Column(name = "EMPLOYEE_SECOND_SURNAME", length = 50)
     private String secondSurname;
 
-    @Size(max = 50)
-    @Column(name = "EMPLOYEE_PASSWORD")
+    @Column(name = "EMPLOYEE_PASSWORD", length = 50)
     private String password;
 
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EMPLOYEE_HOURLY_WAGE")
     private Double hourlyWage;
 
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 1)
-    @Column(name = "EMPLOYEE_ADMINISTRATOR")
+    @Column(name = "EMPLOYEE_ADMINISTRATOR", length = 1)
     private String administrator;
 
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 1)
-    @Column(name = "EMPLOYEE_ACTIVE")
+    @Column(name = "EMPLOYEE_ACTIVE", length = 1)
     private String active;
 
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EMPLOYEE_BIRTH_DATE")
     private LocalDate birthDate;
 
     @Basic(optional = false)
-    @NotNull
     @Lob
     @Column(name = "EMPLOYEE_AVATAR")
     private Byte[] avatar;
 
     @Version
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EMPLOYEE_VERSION")
     private Long version;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shiftReportEmployee")
-    private List<ShiftReport> shiftReportsList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private List<ShiftReport> shiftReports;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shiftEmployee")
-    private List<Shift> shiftsList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private List<Shift> shifts;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollDetailEmployee")
-    private List<PayrollDetail> payrollDetailsList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private List<PayrollDetail> payrollDetails;
 
     public Employee() {
     }
 
     public Employee(Long id) {
         this.id = id;
+    }
+
+    public Employee(EmployeeDto dto) {
+        this.id = dto.getId();
+        update(dto);
+    }
+
+    public void update(EmployeeDto dto) {
+        this.idCard = dto.getIdCard();
+        this.fol = dto.getFol();
+        this.name = dto.getName();
+        this.firstSurname = dto.getFirstSurname();
+        this.secondSurname = dto.getSecondSurname();
+        this.password = dto.getPassword();
+        this.hourlyWage = dto.getHourlyWage();
+        this.active = (dto.getActive() != null && dto.getActive()) ? "T" : "F";
+        this.administrator = (dto.getAdministrator() != null && dto.getAdministrator()) ? "T" : "F";
+        this.birthDate = dto.getBirthDate();
+        this.avatar = dto.getAvatar();
+        this.version = dto.getVersion();
     }
 
     public Long getId() {
@@ -229,53 +229,51 @@ public class Employee implements Serializable {
     }
 
     @XmlTransient
-    public List<ShiftReport> getShiftReportsList() {
-        return shiftReportsList;
+    public List<ShiftReport> getShiftReports() {
+        return shiftReports;
     }
 
-    public void setShiftReportsList(List<ShiftReport> shiftReportsList) {
-        this.shiftReportsList = shiftReportsList;
-    }
-
-    @XmlTransient
-    public List<Shift> getShiftsList() {
-        return shiftsList;
-    }
-
-    public void setShiftsList(List<Shift> shiftsList) {
-        this.shiftsList = shiftsList;
+    public void setShiftReports(List<ShiftReport> shiftReports) {
+        this.shiftReports = shiftReports;
     }
 
     @XmlTransient
-    public List<PayrollDetail> getPayrollDetailsList() {
-        return payrollDetailsList;
+    public List<Shift> getShifts() {
+        return shifts;
     }
 
-    public void setPayrollDetailsList(List<PayrollDetail> payrollDetailsList) {
-        this.payrollDetailsList = payrollDetailsList;
+    public void setShifts(List<Shift> shifts) {
+        this.shifts = shifts;
+    }
+
+    @XmlTransient
+    public List<PayrollDetail> getPayrollDetails() {
+        return payrollDetails;
+    }
+
+    public void setPayrollDetails(List<PayrollDetail> payrollDetails) {
+        this.payrollDetails = payrollDetails;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Employee)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Employee other = (Employee) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "cr.ac.una.attendancerecorderws.model.Employee[ id=" + id + " ]";
+        final Employee other = (Employee) obj;
+        return Objects.equals(this.id, other.id);
     }
 }

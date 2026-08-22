@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cr.ac.una.attendancerecorderws.model;
 
 import jakarta.persistence.Basic;
@@ -17,47 +13,45 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.Objects;
 
-/**
- *
- * @author USUARIO UNA PZ
- */
 @Entity
 @Table(name = "RELOJUNA_SHIFTS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Shift.findAll", query = "SELECT r FROM Shift r"),
-    @NamedQuery(name = "Shift.findByShiftId", query = "SELECT r FROM Shift r WHERE r.shiftId = :shiftId"),
-    @NamedQuery(name = "Shift.findByShiftVersion", query = "SELECT r FROM Shift r WHERE r.shiftVersion = :shiftVersion")})
+    @NamedQuery(name = "Shift.findAll", query = "SELECT s FROM Shift s"),
+    @NamedQuery(name = "Shift.findById", query = "SELECT s FROM Shift s WHERE s.id = :id")
+})
 public class Shift implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_SHIFTS_SEQ01")
     @SequenceGenerator(name = "RELOJUNA_SHIFTS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_SHIFTS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "SHIFT_ID")
-    private BigDecimal shiftId;
+    private Long id;
+    
     @Version
     @Basic(optional = false)
-    @NotNull
     @Column(name = "SHIFT_VERSION")
-    private Long shiftVersion;
+    private Long version;
+    
     @JoinColumn(name = "SHIFT_EMPLOYEE", referencedColumnName = "EMPLOYEE_ID")
     @ManyToOne(optional = false)
-    private Employee shiftEmployee;
+    private Employee employee;
+    
     @JoinColumn(name = "SHIFT_SHIFT_REPORT", referencedColumnName = "SHIFT_REPORT_ID")
     @ManyToOne
-    private ShiftReport shiftShiftReport;
+    private ShiftReport shiftReport;
+    
     @JoinColumn(name = "SHIFT_EXIT_TIME_RECORD", referencedColumnName = "TIME_RECORD_ID")
     @ManyToOne
     private TimeRecord exitRecord;
+    
     @JoinColumn(name = "SHIFT_ENTRY_TIME_RECORD", referencedColumnName = "TIME_RECORD_ID")
     @ManyToOne(optional = false)
     private TimeRecord entryRecord;
@@ -65,45 +59,58 @@ public class Shift implements Serializable {
     public Shift() {
     }
 
-    public Shift(BigDecimal shiftId) {
-        this.shiftId = shiftId;
+    public Shift(Long id) {
+        this.id = id;
     }
 
-    public Shift(BigDecimal shiftId, Long shiftVersion) {
-        this.shiftId = shiftId;
-        this.shiftVersion = shiftVersion;
+    public Shift(ShiftDto dto) {
+        this.id = dto.getId();
+        update(dto);
     }
 
-    public BigDecimal getShiftId() {
-        return shiftId;
+    public void update(ShiftDto dto) {
+        if (dto.getEmployee() != null) {
+            this.employee = new Employee(dto.getEmployee().getId());
+        }
+        if (dto.getEntryRecord() != null) {
+            this.entryRecord = new TimeRecord(dto.getEntryRecord().getId());
+        }
+        if (dto.getExitRecord() != null) {
+            this.exitRecord = new TimeRecord(dto.getExitRecord().getId());
+        }
+        this.version = dto.getVersion();
     }
 
-    public void setShiftId(BigDecimal shiftId) {
-        this.shiftId = shiftId;
+    public Long getId() {
+        return id;
     }
 
-    public Long getShiftVersion() {
-        return shiftVersion;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setShiftVersion(Long shiftVersion) {
-        this.shiftVersion = shiftVersion;
+    public Long getVersion() {
+        return version;
     }
 
-    public Employee getShiftEmployee() {
-        return shiftEmployee;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
-    public void setShiftEmployee(Employee shiftEmployee) {
-        this.shiftEmployee = shiftEmployee;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public ShiftReport getShiftShiftReport() {
-        return shiftShiftReport;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
-    public void setShiftShiftReport(ShiftReport shiftShiftReport) {
-        this.shiftShiftReport = shiftShiftReport;
+    public ShiftReport getShiftReport() {
+        return shiftReport;
+    }
+
+    public void setShiftReport(ShiftReport shiftReport) {
+        this.shiftReport = shiftReport;
     }
 
     public TimeRecord getExitRecord() {
@@ -124,19 +131,18 @@ public class Shift implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (shiftId != null ? shiftId.hashCode() : 0);
+        int hash = 3;
+        hash = 71 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Shift)) {
             return false;
         }
         Shift other = (Shift) object;
-        if ((this.shiftId == null && other.shiftId != null) || (this.shiftId != null && !this.shiftId.equals(other.shiftId))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -144,7 +150,6 @@ public class Shift implements Serializable {
 
     @Override
     public String toString() {
-        return "cr.ac.una.attendancerecorderws.model.Shift[ shiftId=" + shiftId + " ]";
+        return "cr.ac.una.attendancerecorderws.model.Shift[ id=" + id + " ]";
     }
-    
 }

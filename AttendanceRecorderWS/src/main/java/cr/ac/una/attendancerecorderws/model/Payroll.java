@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cr.ac.una.attendancerecorderws.model;
 
 import jakarta.persistence.Basic;
@@ -17,138 +13,132 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
+import java.util.Objects;
 
-/**
- *
- * @author USUARIO UNA PZ
- */
 @Entity
 @Table(name = "RELOJUNA_PAYROLLS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Payroll.findAll", query = "SELECT r FROM Payroll r"),
-    @NamedQuery(name = "Payroll.findByPayrollId", query = "SELECT r FROM Payroll r WHERE r.payrollId = :payrollId"),
-    @NamedQuery(name = "Payroll.findByPayrollMonth", query = "SELECT r FROM Payroll r WHERE r.payrollMonth = :payrollMonth"),
-    @NamedQuery(name = "Payroll.findByPayrollYear", query = "SELECT r FROM Payroll r WHERE r.payrollYear = :payrollYear"),
-    @NamedQuery(name = "Payroll.findByPayrollTotalPayment", query = "SELECT r FROM Payroll r WHERE r.payrollTotalPayment = :payrollTotalPayment"),
-    @NamedQuery(name = "Payroll.findByPayrollVersion", query = "SELECT r FROM Payroll r WHERE r.payrollVersion = :payrollVersion")})
+    @NamedQuery(name = "Payroll.findAll", query = "SELECT p FROM Payroll p"),
+    @NamedQuery(name = "Payroll.findById", query = "SELECT p FROM Payroll p WHERE p.id = :id")
+})
 public class Payroll implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_PAYROLLS_SEQ01")
     @SequenceGenerator(name = "RELOJUNA_PAYROLLS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_PAYROLLS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_ID")
-    private BigDecimal payrollId;
+    private Long id;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_MONTH")
-    private short payrollMonth;
+    private Integer month;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_YEAR")
-    private BigInteger payrollYear;
+    private Integer year;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_TOTAL_PAYMENT")
-    private BigDecimal payrollTotalPayment;
+    private Double totalPayment;
+
     @Version
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_VERSION")
-    private Long payrollVersion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollDetailPayroll")
-    private List<PayrollDetail> payrollDetailsList;
+    private Long version;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
+    private List<PayrollDetail> details;
 
     public Payroll() {
     }
 
-    public Payroll(BigDecimal payrollId) {
-        this.payrollId = payrollId;
+    public Payroll(Long id) {
+        this.id = id;
     }
 
-    public Payroll(BigDecimal payrollId, short payrollMonth, BigInteger payrollYear, BigDecimal payrollTotalPayment, Long payrollVersion) {
-        this.payrollId = payrollId;
-        this.payrollMonth = payrollMonth;
-        this.payrollYear = payrollYear;
-        this.payrollTotalPayment = payrollTotalPayment;
-        this.payrollVersion = payrollVersion;
+    public Payroll(PayrollDto dto) {
+        this.id = dto.getId();
+        update(dto);
     }
 
-    public BigDecimal getPayrollId() {
-        return payrollId;
+    public void update(PayrollDto dto) {
+        this.month = dto.getMonth();
+        this.year = dto.getYear();
+        this.totalPayment = dto.getTotalPayment();
+        this.version = dto.getVersion();
     }
 
-    public void setPayrollId(BigDecimal payrollId) {
-        this.payrollId = payrollId;
+    public Long getId() {
+        return id;
     }
 
-    public short getPayrollMonth() {
-        return payrollMonth;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setPayrollMonth(short payrollMonth) {
-        this.payrollMonth = payrollMonth;
+    public Integer getMonth() {
+        return month;
     }
 
-    public BigInteger getPayrollYear() {
-        return payrollYear;
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
-    public void setPayrollYear(BigInteger payrollYear) {
-        this.payrollYear = payrollYear;
+    public Integer getYear() {
+        return year;
     }
 
-    public BigDecimal getPayrollTotalPayment() {
-        return payrollTotalPayment;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
-    public void setPayrollTotalPayment(BigDecimal payrollTotalPayment) {
-        this.payrollTotalPayment = payrollTotalPayment;
+    public Double getTotalPayment() {
+        return totalPayment;
     }
 
-    public Long getPayrollVersion() {
-        return payrollVersion;
+    public void setTotalPayment(Double totalPayment) {
+        this.totalPayment = totalPayment;
     }
 
-    public void setPayrollVersion(Long payrollVersion) {
-        this.payrollVersion = payrollVersion;
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @XmlTransient
-    public List<PayrollDetail> getPayrollDetailsList() {
-        return payrollDetailsList;
+    public List<PayrollDetail> getDetails() {
+        return details;
     }
 
-    public void setPayrollDetailsList(List<PayrollDetail> payrollDetailsList) {
-        this.payrollDetailsList = payrollDetailsList;
+    public void setDetails(List<PayrollDetail> details) {
+        this.details = details;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (payrollId != null ? payrollId.hashCode() : 0);
+        int hash = 3;
+        hash = 19 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Payroll)) {
             return false;
         }
         Payroll other = (Payroll) object;
-        if ((this.payrollId == null && other.payrollId != null) || (this.payrollId != null && !this.payrollId.equals(other.payrollId))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -156,7 +146,7 @@ public class Payroll implements Serializable {
 
     @Override
     public String toString() {
-        return "cr.ac.una.attendancerecorderws.model.Payroll[ payrollId=" + payrollId + " ]";
+        return "cr.ac.una.attendancerecorderws.model.Payroll[ payrollId=" + id + " ]";
     }
     
 }

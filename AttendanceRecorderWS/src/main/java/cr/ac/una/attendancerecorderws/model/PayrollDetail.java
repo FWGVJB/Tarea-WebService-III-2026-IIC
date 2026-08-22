@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cr.ac.una.attendancerecorderws.model;
 
 import jakarta.persistence.Basic;
@@ -17,146 +13,145 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.Objects;
 
-/**
- *
- * @author USUARIO UNA PZ
- */
 @Entity
 @Table(name = "RELOJUNA_PAYROLL_DETAILS")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "PayrollDetail.findAll", query = "SELECT r FROM PayrollDetail r"),
-    @NamedQuery(name = "PayrollDetail.findByPayrollDetailId", query = "SELECT r FROM PayrollDetail r WHERE r.payrollDetailId = :payrollDetailId"),
-    @NamedQuery(name = "PayrollDetail.findByPayrollDetailHourlyWage", query = "SELECT r FROM PayrollDetail r WHERE r.payrollDetailHourlyWage = :payrollDetailHourlyWage"),
-    @NamedQuery(name = "PayrollDetail.findByPayrollDetailWorkedHours", query = "SELECT r FROM PayrollDetail r WHERE r.payrollDetailWorkedHours = :payrollDetailWorkedHours"),
-    @NamedQuery(name = "PayrollDetail.findByPayrollDetailMonthlySalary", query = "SELECT r FROM PayrollDetail r WHERE r.payrollDetailMonthlySalary = :payrollDetailMonthlySalary"),
-    @NamedQuery(name = "PayrollDetail.findByPayrollDetailVersion", query = "SELECT r FROM PayrollDetail r WHERE r.payrollDetailVersion = :payrollDetailVersion")})
+    @NamedQuery(name = "PayrollDetail.findById", query = "SELECT r FROM PayrollDetail r WHERE r.id = :id")
+})
 public class PayrollDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_PAYROLL_DETAILS_SEQ01")
     @SequenceGenerator(name = "RELOJUNA_PAYROLL_DETAILS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_PAYROLL_DETAILS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_DETAIL_ID")
-    private BigDecimal payrollDetailId;
+    private Long id;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_DETAIL_HOURLY_WAGE")
-    private BigDecimal payrollDetailHourlyWage;
+    private Double hourlyWage;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_DETAIL_WORKED_HOURS")
-    private BigDecimal payrollDetailWorkedHours;
+    private Double workedHours;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_DETAIL_MONTHLY_SALARY")
-    private BigDecimal payrollDetailMonthlySalary;
+    private Double monthlySalary;
+
     @Version
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PAYROLL_DETAIL_VERSION")
-    private Long payrollDetailVersion;
+    private Long version;
+
     @JoinColumn(name = "PAYROLL_DETAIL_EMPLOYEE", referencedColumnName = "EMPLOYEE_ID")
     @ManyToOne(optional = false)
-    private Employee payrollDetailEmployee;
+    private Employee employee;
+
     @JoinColumn(name = "PAYROLL_DETAIL_PAYROLL", referencedColumnName = "PAYROLL_ID")
     @ManyToOne(optional = false)
-    private Payroll payrollDetailPayroll;
+    private Payroll payroll;
 
     public PayrollDetail() {
     }
 
-    public PayrollDetail(BigDecimal payrollDetailId) {
-        this.payrollDetailId = payrollDetailId;
+    public PayrollDetail(Long id) {
+        this.id = id;
     }
 
-    public PayrollDetail(BigDecimal payrollDetailId, BigDecimal payrollDetailHourlyWage, BigDecimal payrollDetailWorkedHours, BigDecimal payrollDetailMonthlySalary, Long payrollDetailVersion) {
-        this.payrollDetailId = payrollDetailId;
-        this.payrollDetailHourlyWage = payrollDetailHourlyWage;
-        this.payrollDetailWorkedHours = payrollDetailWorkedHours;
-        this.payrollDetailMonthlySalary = payrollDetailMonthlySalary;
-        this.payrollDetailVersion = payrollDetailVersion;
+    public PayrollDetail(PayrollDetailDto dto) {
+        this.id = dto.getId();
+        update(dto);
     }
 
-    public BigDecimal getPayrollDetailId() {
-        return payrollDetailId;
+    public void update(PayrollDetailDto dto) {
+        if (dto.getEmployee() != null) {
+            this.employee = new Employee(dto.getEmployee().getId());
+        }
+        this.hourlyWage = dto.getHourlyWage();
+        this.workedHours = dto.getWorkedHours();
+        this.monthlySalary = dto.getMonthlySalary();
+        this.version = dto.getVersion();
     }
 
-    public void setPayrollDetailId(BigDecimal payrollDetailId) {
-        this.payrollDetailId = payrollDetailId;
+    public Long getId() {
+        return id;
     }
 
-    public BigDecimal getPayrollDetailHourlyWage() {
-        return payrollDetailHourlyWage;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setPayrollDetailHourlyWage(BigDecimal payrollDetailHourlyWage) {
-        this.payrollDetailHourlyWage = payrollDetailHourlyWage;
+    public Double getHourlyWage() {
+        return hourlyWage;
     }
 
-    public BigDecimal getPayrollDetailWorkedHours() {
-        return payrollDetailWorkedHours;
+    public void setHourlyWage(Double hourlyWage) {
+        this.hourlyWage = hourlyWage;
     }
 
-    public void setPayrollDetailWorkedHours(BigDecimal payrollDetailWorkedHours) {
-        this.payrollDetailWorkedHours = payrollDetailWorkedHours;
+    public Double getWorkedHours() {
+        return workedHours;
     }
 
-    public BigDecimal getPayrollDetailMonthlySalary() {
-        return payrollDetailMonthlySalary;
+    public void setWorkedHours(Double workedHours) {
+        this.workedHours = workedHours;
     }
 
-    public void setPayrollDetailMonthlySalary(BigDecimal payrollDetailMonthlySalary) {
-        this.payrollDetailMonthlySalary = payrollDetailMonthlySalary;
+    public Double getMonthlySalary() {
+        return monthlySalary;
     }
 
-    public Long getPayrollDetailVersion() {
-        return payrollDetailVersion;
+    public void setMonthlySalary(Double monthlySalary) {
+        this.monthlySalary = monthlySalary;
     }
 
-    public void setPayrollDetailVersion(Long payrollDetailVersion) {
-        this.payrollDetailVersion = payrollDetailVersion;
+    public Long getVersion() {
+        return version;
     }
 
-    public Employee getPayrollDetailEmployee() {
-        return payrollDetailEmployee;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
-    public void setPayrollDetailEmployee(Employee payrollDetailEmployee) {
-        this.payrollDetailEmployee = payrollDetailEmployee;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public Payroll getPayrollDetailPayroll() {
-        return payrollDetailPayroll;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
-    public void setPayrollDetailPayroll(Payroll payrollDetailPayroll) {
-        this.payrollDetailPayroll = payrollDetailPayroll;
+    public Payroll getPayroll() {
+        return payroll;
+    }
+
+    public void setPayroll(Payroll payroll) {
+        this.payroll = payroll;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (payrollDetailId != null ? payrollDetailId.hashCode() : 0);
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof PayrollDetail)) {
             return false;
         }
         PayrollDetail other = (PayrollDetail) object;
-        if ((this.payrollDetailId == null && other.payrollDetailId != null) || (this.payrollDetailId != null && !this.payrollDetailId.equals(other.payrollDetailId))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -164,7 +159,7 @@ public class PayrollDetail implements Serializable {
 
     @Override
     public String toString() {
-        return "cr.ac.una.attendancerecorderws.model.PayrollDetail[ payrollDetailId=" + payrollDetailId + " ]";
+        return "cr.ac.una.attendancerecorderws.model.PayrollDetail[ payrollDetailId=" + id + " ]";
     }
-    
+
 }

@@ -27,15 +27,6 @@ public class TimeRecordDto implements Serializable {
         this.version = timeRecord.getVersion();
     }
 
-    public TimeRecord toEntity() {
-        TimeRecord timeRecord = new TimeRecord();
-        timeRecord.setId(this.id);
-        timeRecord.setTimestamp(this.timestamp);
-        timeRecord.setManuallyAdded(Boolean.TRUE.equals(this.manuallyAdded) ? "T" : "F");
-        timeRecord.setVersion(this.version);
-        return timeRecord;
-    }
-
     public Long getId() {
         return id;
     }

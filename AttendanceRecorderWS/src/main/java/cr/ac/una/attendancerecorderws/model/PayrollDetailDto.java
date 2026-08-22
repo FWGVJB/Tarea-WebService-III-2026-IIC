@@ -21,24 +21,14 @@ public class PayrollDetailDto implements Serializable {
 
     public PayrollDetailDto(PayrollDetail detail) {
         this();
-        if (detail.getPayrollDetailId() != null) {
-            this.id = detail.getPayrollDetailId().longValue();
+        this.id = detail.getId();
+        if (detail.getEmployee() != null) {
+            this.employee = new EmployeeDto(detail.getEmployee());
         }
-        if (detail.getPayrollDetailEmployee() != null) {
-            this.employee = new EmployeeDto(detail.getPayrollDetailEmployee());
-        }
-        if (detail.getPayrollDetailHourlyWage() != null) {
-            this.hourlyWage = detail.getPayrollDetailHourlyWage().doubleValue();
-        }
-        if (detail.getPayrollDetailWorkedHours() != null) {
-            this.workedHours = detail.getPayrollDetailWorkedHours().doubleValue();
-        }
-        if (detail.getPayrollDetailMonthlySalary() != null) {
-            this.monthlySalary = detail.getPayrollDetailMonthlySalary().doubleValue();
-        }
-        if (detail.getPayrollDetailVersion() != null) {
-            this.version = detail.getPayrollDetailVersion().longValue();
-        }
+        this.hourlyWage = detail.getHourlyWage();
+        this.workedHours = detail.getWorkedHours();
+        this.monthlySalary = detail.getMonthlySalary();
+        this.version = detail.getVersion();
     }
 
     public Long getId() {

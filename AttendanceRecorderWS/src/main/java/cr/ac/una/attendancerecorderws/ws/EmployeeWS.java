@@ -20,14 +20,14 @@ public class EmployeeWS {
 
     @WebMethod(operationName = "saveEmployee")
     public EmployeeDto saveEmployee(@WebParam(name = "employee") EmployeeDto employeeDto) {
-        Employee employee = employeeDto.toEntity();
+        Employee employee = new Employee(employeeDto);
         Employee saved = employeeService.saveEmployee(employee);
         return new EmployeeDto(saved);
     }
 
     @WebMethod(operationName = "updateEmployee")
     public EmployeeDto updateEmployee(@WebParam(name = "employee") EmployeeDto employeeDto) {
-        Employee employee = employeeDto.toEntity();
+        Employee employee = new Employee(employeeDto);
         Employee updated = employeeService.updateEmployee(employee);
         return new EmployeeDto(updated);
     }

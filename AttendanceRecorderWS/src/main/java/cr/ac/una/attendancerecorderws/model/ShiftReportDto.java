@@ -24,19 +24,14 @@ public class ShiftReportDto implements Serializable {
 
     public ShiftReportDto(ShiftReport report) {
         this();
-        if (report.getShiftReportId() != null) {
-            this.id = report.getShiftReportId().longValue();
-        }
+        this.id = report.getId();
+        this.month = report.getMonth();
+        this.year = report.getYear();
         
-        this.month = (int) report.getShiftReportMonth();
-        this.year = (int) report.getShiftReportYear();
-        
-        if (report.getShiftReportEmployee() != null) {
-            this.employee = new EmployeeDto(report.getShiftReportEmployee());
+        if (report.getEmployee() != null) {
+            this.employee = new EmployeeDto(report.getEmployee());
         }
-        if (report.getShiftReportVersion() != null) {
-            this.version = report.getShiftReportVersion().longValue();
-        }
+        this.version = report.getVersion();
     }
 
     public Long getId() {

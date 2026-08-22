@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cr.ac.una.attendancerecorderws.model;
 
 import jakarta.persistence.Basic;
@@ -18,134 +14,134 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
-/**
- *
- * @author USUARIO UNA PZ
- */
 @Entity
 @Table(name = "RELOJUNA_SHIFT_REPORTS")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ShiftReport.findAll", query = "SELECT r FROM ShiftReport r"),
-    @NamedQuery(name = "ShiftReport.findByShiftReportId", query = "SELECT r FROM ShiftReport r WHERE r.shiftReportId = :shiftReportId"),
-    @NamedQuery(name = "ShiftReport.findByShiftReportMonth", query = "SELECT r FROM ShiftReport r WHERE r.shiftReportMonth = :shiftReportMonth"),
-    @NamedQuery(name = "ShiftReport.findByShiftReportYear", query = "SELECT r FROM ShiftReport r WHERE r.shiftReportYear = :shiftReportYear"),
-    @NamedQuery(name = "ShiftReport.findByShiftReportVersion", query = "SELECT r FROM ShiftReport r WHERE r.shiftReportVersion = :shiftReportVersion")})
+    @NamedQuery(name = "ShiftReport.findById", query = "SELECT r FROM ShiftReport r WHERE r.id = :id")
+})
 public class ShiftReport implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_SHIFT_REPORTS_SEQ01")
     @SequenceGenerator(name = "RELOJUNA_SHIFT_REPORTS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_SHIFT_REPORTS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "SHIFT_REPORT_ID")
-    private BigDecimal shiftReportId;
+    private Long id;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "SHIFT_REPORT_MONTH")
-    private short shiftReportMonth;
+    private Integer month;
+
     @Basic(optional = false)
-    @NotNull
     @Column(name = "SHIFT_REPORT_YEAR")
-    private short shiftReportYear;
+    private Integer year;
+
     @Version
     @Basic(optional = false)
-    @NotNull
     @Column(name = "SHIFT_REPORT_VERSION")
-    private Long shiftReportVersion;
+    private Long version;
+
     @JoinColumn(name = "SHIFT_REPORT_EMPLOYEE", referencedColumnName = "EMPLOYEE_ID")
     @ManyToOne(optional = false)
-    private Employee shiftReportEmployee;
-    @OneToMany(mappedBy = "shiftShiftReport")
-    private List<Shift> shiftsList;
+    private Employee employee;
+
+    @OneToMany(mappedBy = "shiftReport")
+    private List<Shift> shifts;
 
     public ShiftReport() {
     }
 
-    public ShiftReport(BigDecimal shiftReportId) {
-        this.shiftReportId = shiftReportId;
+    public ShiftReport(Long id) {
+        this.id = id;
     }
 
-    public ShiftReport(BigDecimal shiftReportId, short shiftReportMonth, short shiftReportYear, Long shiftReportVersion) {
-        this.shiftReportId = shiftReportId;
-        this.shiftReportMonth = shiftReportMonth;
-        this.shiftReportYear = shiftReportYear;
-        this.shiftReportVersion = shiftReportVersion;
+    public ShiftReport(ShiftReportDto dto) {
+        this.id = dto.getId();
+        update(dto);
     }
 
-    public BigDecimal getShiftReportId() {
-        return shiftReportId;
+    public void update(ShiftReportDto dto) {
+        this.month = dto.getMonth();
+        this.year = dto.getYear();
+        if (dto.getEmployee() != null) {
+            this.employee = new Employee(dto.getEmployee().getId());
+        }
+        this.version = dto.getVersion();
     }
 
-    public void setShiftReportId(BigDecimal shiftReportId) {
-        this.shiftReportId = shiftReportId;
+    public Long getId() {
+        return id;
     }
 
-    public short getShiftReportMonth() {
-        return shiftReportMonth;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setShiftReportMonth(short shiftReportMonth) {
-        this.shiftReportMonth = shiftReportMonth;
+    public Integer getMonth() {
+        return month;
     }
 
-    public short getShiftReportYear() {
-        return shiftReportYear;
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
-    public void setShiftReportYear(short shiftReportYear) {
-        this.shiftReportYear = shiftReportYear;
+    public Integer getYear() {
+        return year;
     }
 
-    public Long getShiftReportVersion() {
-        return shiftReportVersion;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
-    public void setShiftReportVersion(Long shiftReportVersion) {
-        this.shiftReportVersion = shiftReportVersion;
+    public Long getVersion() {
+        return version;
     }
 
-    public Employee getShiftReportEmployee() {
-        return shiftReportEmployee;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
-    public void setShiftReportEmployee(Employee shiftReportEmployee) {
-        this.shiftReportEmployee = shiftReportEmployee;
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     @XmlTransient
-    public List<Shift> getShiftsList() {
-        return shiftsList;
+    public List<Shift> getShifts() {
+        return shifts;
     }
 
-    public void setShiftsList(List<Shift> shiftsList) {
-        this.shiftsList = shiftsList;
+    public void setShifts(List<Shift> shifts) {
+        this.shifts = shifts;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (shiftReportId != null ? shiftReportId.hashCode() : 0);
+        int hash = 7;
+        hash = 41 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof ShiftReport)) {
             return false;
         }
         ShiftReport other = (ShiftReport) object;
-        if ((this.shiftReportId == null && other.shiftReportId != null) || (this.shiftReportId != null && !this.shiftReportId.equals(other.shiftReportId))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -153,7 +149,7 @@ public class ShiftReport implements Serializable {
 
     @Override
     public String toString() {
-        return "cr.ac.una.attendancerecorderws.model.ShiftReport[ shiftReportId=" + shiftReportId + " ]";
+        return "cr.ac.una.attendancerecorderws.model.ShiftReport[ shiftReportId=" + id + " ]";
     }
     
 }

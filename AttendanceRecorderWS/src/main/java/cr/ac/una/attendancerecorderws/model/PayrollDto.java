@@ -24,19 +24,11 @@ public class PayrollDto implements Serializable {
 
     public PayrollDto(Payroll payroll) {
         this();
-        if (payroll.getPayrollId() != null) {
-            this.id = payroll.getPayrollId().longValue();
-        }
-        this.month = (int) payroll.getPayrollMonth();
-        if (payroll.getPayrollYear() != null) {
-            this.year = payroll.getPayrollYear().intValue();
-        }
-        if (payroll.getPayrollTotalPayment() != null) {
-            this.totalPayment = payroll.getPayrollTotalPayment().doubleValue();
-        }
-        if (payroll.getPayrollVersion() != null) {
-            this.version = payroll.getPayrollVersion().longValue();
-        }
+        this.id = payroll.getId();
+        this.month = payroll.getMonth();
+        this.year = payroll.getYear();
+        this.totalPayment = payroll.getTotalPayment();
+        this.version = payroll.getVersion();
     }
 
     public Long getId() {

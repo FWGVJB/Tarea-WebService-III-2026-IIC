@@ -13,12 +13,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "RELOJUNA_TIME_RECORDS")
@@ -35,23 +35,19 @@ public class TimeRecord implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_TIME_RECORDS_SEQ01")
     @SequenceGenerator(name = "RELOJUNA_TIME_RECORDS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_TIME_RECORDS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TIME_RECORD_ID")
     private Long id;
 
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TIME_RECORD_TIME_STAMP")
     private LocalDateTime timestamp;
 
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "TIME_RECORD_MANUALLY_ADDED")
+    @Column(name = "TIME_RECORD_MANUALLY_ADDED", length = 1)
     private String manuallyAdded;
 
     @Version
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TIME_RECORD_VERSION")
     private Long version;
 
@@ -66,6 +62,17 @@ public class TimeRecord implements Serializable {
 
     public TimeRecord(Long id) {
         this.id = id;
+    }
+
+    public TimeRecord(TimeRecordDto dto) {
+        this.id = dto.getId();
+        update(dto);
+    }
+
+    public void update(TimeRecordDto dto) {
+        this.timestamp = dto.getTimestamp();
+        this.manuallyAdded = (dto.getManuallyAdded() != null && dto.getManuallyAdded()) ? "T" : "F";
+        this.version = dto.getVersion();
     }
 
     public Long getId() {
@@ -120,8 +127,8 @@ public class TimeRecord implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -135,10 +142,5 @@ public class TimeRecord implements Serializable {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "cr.ac.una.attendancerecorderws.model.TimeRecord[ id=" + id + " ]";
     }
 }

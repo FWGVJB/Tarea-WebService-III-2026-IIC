@@ -46,24 +46,6 @@ public class EmployeeDto implements Serializable {
         this.version = employee.getVersion();
     }
 
-    public Employee toEntity() {
-        Employee employee = new Employee();
-        employee.setId(this.id);
-        employee.setIdCard(this.idCard);
-        employee.setFol(this.fol);
-        employee.setName(this.name);
-        employee.setFirstSurname(this.firstSurname);
-        employee.setSecondSurname(this.secondSurname);
-        employee.setPassword(this.password);
-        employee.setHourlyWage(this.hourlyWage);
-        employee.setActive(Boolean.TRUE.equals(this.active) ? "T" : "F");
-        employee.setAdministrator(Boolean.TRUE.equals(this.administrator) ? "T" : "F");
-        employee.setBirthDate(this.birthDate);
-        employee.setAvatar(this.avatar);
-        employee.setVersion(this.version);
-        return employee;
-    }
-
     public Long getId() {
         return id;
     }
