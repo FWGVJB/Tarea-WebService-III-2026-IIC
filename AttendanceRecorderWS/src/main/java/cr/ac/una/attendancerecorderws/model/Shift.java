@@ -7,17 +7,20 @@ package cr.ac.una.attendancerecorderws.model;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  *
@@ -35,14 +38,17 @@ public class Shift implements Serializable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_SHIFTS_SEQ01")
+    @SequenceGenerator(name = "RELOJUNA_SHIFTS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_SHIFTS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
     @NotNull
     @Column(name = "SHIFT_ID")
     private BigDecimal shiftId;
+    @Version
     @Basic(optional = false)
     @NotNull
     @Column(name = "SHIFT_VERSION")
-    private BigInteger shiftVersion;
+    private Long shiftVersion;
     @JoinColumn(name = "SHIFT_EMPLOYEE", referencedColumnName = "EMPLOYEE_ID")
     @ManyToOne(optional = false)
     private Employee shiftEmployee;
@@ -63,7 +69,7 @@ public class Shift implements Serializable {
         this.shiftId = shiftId;
     }
 
-    public Shift(BigDecimal shiftId, BigInteger shiftVersion) {
+    public Shift(BigDecimal shiftId, Long shiftVersion) {
         this.shiftId = shiftId;
         this.shiftVersion = shiftVersion;
     }
@@ -76,11 +82,11 @@ public class Shift implements Serializable {
         this.shiftId = shiftId;
     }
 
-    public BigInteger getShiftVersion() {
+    public Long getShiftVersion() {
         return shiftVersion;
     }
 
-    public void setShiftVersion(BigInteger shiftVersion) {
+    public void setShiftVersion(Long shiftVersion) {
         this.shiftVersion = shiftVersion;
     }
 

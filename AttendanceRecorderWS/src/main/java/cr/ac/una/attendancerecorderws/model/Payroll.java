@@ -8,11 +8,15 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -40,6 +44,8 @@ public class Payroll implements Serializable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_PAYROLLS_SEQ01")
+    @SequenceGenerator(name = "RELOJUNA_PAYROLLS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_PAYROLLS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
     @NotNull
     @Column(name = "PAYROLL_ID")
@@ -56,10 +62,11 @@ public class Payroll implements Serializable {
     @NotNull
     @Column(name = "PAYROLL_TOTAL_PAYMENT")
     private BigDecimal payrollTotalPayment;
+    @Version
     @Basic(optional = false)
     @NotNull
     @Column(name = "PAYROLL_VERSION")
-    private BigInteger payrollVersion;
+    private Long payrollVersion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollDetailPayroll")
     private List<PayrollDetail> payrollDetailsList;
 
@@ -70,7 +77,7 @@ public class Payroll implements Serializable {
         this.payrollId = payrollId;
     }
 
-    public Payroll(BigDecimal payrollId, short payrollMonth, BigInteger payrollYear, BigDecimal payrollTotalPayment, BigInteger payrollVersion) {
+    public Payroll(BigDecimal payrollId, short payrollMonth, BigInteger payrollYear, BigDecimal payrollTotalPayment, Long payrollVersion) {
         this.payrollId = payrollId;
         this.payrollMonth = payrollMonth;
         this.payrollYear = payrollYear;
@@ -110,11 +117,11 @@ public class Payroll implements Serializable {
         this.payrollTotalPayment = payrollTotalPayment;
     }
 
-    public BigInteger getPayrollVersion() {
+    public Long getPayrollVersion() {
         return payrollVersion;
     }
 
-    public void setPayrollVersion(BigInteger payrollVersion) {
+    public void setPayrollVersion(Long payrollVersion) {
         this.payrollVersion = payrollVersion;
     }
 

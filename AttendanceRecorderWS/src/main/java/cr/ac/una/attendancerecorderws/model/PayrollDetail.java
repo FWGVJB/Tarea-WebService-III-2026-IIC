@@ -7,17 +7,20 @@ package cr.ac.una.attendancerecorderws.model;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  *
@@ -38,6 +41,8 @@ public class PayrollDetail implements Serializable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_PAYROLL_DETAILS_SEQ01")
+    @SequenceGenerator(name = "RELOJUNA_PAYROLL_DETAILS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_PAYROLL_DETAILS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
     @NotNull
     @Column(name = "PAYROLL_DETAIL_ID")
@@ -54,10 +59,11 @@ public class PayrollDetail implements Serializable {
     @NotNull
     @Column(name = "PAYROLL_DETAIL_MONTHLY_SALARY")
     private BigDecimal payrollDetailMonthlySalary;
+    @Version
     @Basic(optional = false)
     @NotNull
     @Column(name = "PAYROLL_DETAIL_VERSION")
-    private BigInteger payrollDetailVersion;
+    private Long payrollDetailVersion;
     @JoinColumn(name = "PAYROLL_DETAIL_EMPLOYEE", referencedColumnName = "EMPLOYEE_ID")
     @ManyToOne(optional = false)
     private Employee payrollDetailEmployee;
@@ -72,7 +78,7 @@ public class PayrollDetail implements Serializable {
         this.payrollDetailId = payrollDetailId;
     }
 
-    public PayrollDetail(BigDecimal payrollDetailId, BigDecimal payrollDetailHourlyWage, BigDecimal payrollDetailWorkedHours, BigDecimal payrollDetailMonthlySalary, BigInteger payrollDetailVersion) {
+    public PayrollDetail(BigDecimal payrollDetailId, BigDecimal payrollDetailHourlyWage, BigDecimal payrollDetailWorkedHours, BigDecimal payrollDetailMonthlySalary, Long payrollDetailVersion) {
         this.payrollDetailId = payrollDetailId;
         this.payrollDetailHourlyWage = payrollDetailHourlyWage;
         this.payrollDetailWorkedHours = payrollDetailWorkedHours;
@@ -112,11 +118,11 @@ public class PayrollDetail implements Serializable {
         this.payrollDetailMonthlySalary = payrollDetailMonthlySalary;
     }
 
-    public BigInteger getPayrollDetailVersion() {
+    public Long getPayrollDetailVersion() {
         return payrollDetailVersion;
     }
 
-    public void setPayrollDetailVersion(BigInteger payrollDetailVersion) {
+    public void setPayrollDetailVersion(Long payrollDetailVersion) {
         this.payrollDetailVersion = payrollDetailVersion;
     }
 

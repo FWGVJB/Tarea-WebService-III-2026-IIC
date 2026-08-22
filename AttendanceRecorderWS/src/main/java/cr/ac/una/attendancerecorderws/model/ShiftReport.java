@@ -7,19 +7,22 @@ package cr.ac.una.attendancerecorderws.model;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -40,6 +43,8 @@ public class ShiftReport implements Serializable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELOJUNA_SHIFT_REPORTS_SEQ01")
+    @SequenceGenerator(name = "RELOJUNA_SHIFT_REPORTS_SEQ01", sequenceName = "RELOJUNA.RELOJUNA_SHIFT_REPORTS_SEQ01", allocationSize = 1)
     @Basic(optional = false)
     @NotNull
     @Column(name = "SHIFT_REPORT_ID")
@@ -52,10 +57,11 @@ public class ShiftReport implements Serializable {
     @NotNull
     @Column(name = "SHIFT_REPORT_YEAR")
     private short shiftReportYear;
+    @Version
     @Basic(optional = false)
     @NotNull
     @Column(name = "SHIFT_REPORT_VERSION")
-    private BigInteger shiftReportVersion;
+    private Long shiftReportVersion;
     @JoinColumn(name = "SHIFT_REPORT_EMPLOYEE", referencedColumnName = "EMPLOYEE_ID")
     @ManyToOne(optional = false)
     private Employee shiftReportEmployee;
@@ -69,7 +75,7 @@ public class ShiftReport implements Serializable {
         this.shiftReportId = shiftReportId;
     }
 
-    public ShiftReport(BigDecimal shiftReportId, short shiftReportMonth, short shiftReportYear, BigInteger shiftReportVersion) {
+    public ShiftReport(BigDecimal shiftReportId, short shiftReportMonth, short shiftReportYear, Long shiftReportVersion) {
         this.shiftReportId = shiftReportId;
         this.shiftReportMonth = shiftReportMonth;
         this.shiftReportYear = shiftReportYear;
@@ -100,11 +106,11 @@ public class ShiftReport implements Serializable {
         this.shiftReportYear = shiftReportYear;
     }
 
-    public BigInteger getShiftReportVersion() {
+    public Long getShiftReportVersion() {
         return shiftReportVersion;
     }
 
-    public void setShiftReportVersion(BigInteger shiftReportVersion) {
+    public void setShiftReportVersion(Long shiftReportVersion) {
         this.shiftReportVersion = shiftReportVersion;
     }
 
