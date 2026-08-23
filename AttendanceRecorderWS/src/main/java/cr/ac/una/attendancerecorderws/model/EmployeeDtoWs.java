@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class EmployeeDto implements Serializable {
+public class EmployeeDtoWs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,13 +25,13 @@ public class EmployeeDto implements Serializable {
     private Long version;
     private Boolean modified;
 
-    public EmployeeDto() {
+    public EmployeeDtoWs() {
         this.modified = false;
         this.active = false;
         this.administrator = false;
     }
 
-    public EmployeeDto(Employee employee) {
+    public EmployeeDtoWs(Employee employee) {
         this();
         this.id = employee.getId();
         this.idCard = employee.getIdCard();
@@ -179,7 +179,7 @@ public class EmployeeDto implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final EmployeeDto other = (EmployeeDto) obj;
+        final EmployeeDtoWs other = (EmployeeDtoWs) obj;
         return Objects.equals(this.id, other.id);
     }
 }

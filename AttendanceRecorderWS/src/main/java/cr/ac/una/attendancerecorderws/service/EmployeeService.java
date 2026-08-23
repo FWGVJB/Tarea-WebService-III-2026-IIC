@@ -16,6 +16,7 @@ public class EmployeeService {
     public Employee saveEmployee(Employee employee) {
         em.persist(employee);
         em.flush();
+        em.refresh(employee); 
         return employee;
     }
 

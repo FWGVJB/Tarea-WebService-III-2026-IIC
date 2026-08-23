@@ -3,32 +3,32 @@ package cr.ac.una.attendancerecorderws.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ShiftDto implements Serializable {
+public class ShiftDtoWs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private EmployeeDto employee;
-    private TimeRecordDto entryRecord;
-    private TimeRecordDto exitRecord;
+    private EmployeeDtoWs employee;
+    private TimeRecordDtoWs entryRecord;
+    private TimeRecordDtoWs exitRecord;
     private Long version;
     private Boolean modified;
 
-    public ShiftDto() {
+    public ShiftDtoWs() {
         this.modified = false;
     }
 
-    public ShiftDto(Shift shift) {
+    public ShiftDtoWs(Shift shift) {
         this();
         this.id = shift.getId();
         if (shift.getEmployee() != null) {
-            this.employee = new EmployeeDto(shift.getEmployee());
+            this.employee = new EmployeeDtoWs(shift.getEmployee());
         }
         if (shift.getEntryRecord() != null) {
-            this.entryRecord = new TimeRecordDto(shift.getEntryRecord());
+            this.entryRecord = new TimeRecordDtoWs(shift.getEntryRecord());
         }
         if (shift.getExitRecord() != null) {
-            this.exitRecord = new TimeRecordDto(shift.getExitRecord());
+            this.exitRecord = new TimeRecordDtoWs(shift.getExitRecord());
         }
         this.version = shift.getVersion();
     }
@@ -41,27 +41,27 @@ public class ShiftDto implements Serializable {
         this.id = id;
     }
 
-    public EmployeeDto getEmployee() {
+    public EmployeeDtoWs getEmployee() {
         return employee;
     }
 
-    public void setEmployee(EmployeeDto employee) {
+    public void setEmployee(EmployeeDtoWs employee) {
         this.employee = employee;
     }
 
-    public TimeRecordDto getEntryRecord() {
+    public TimeRecordDtoWs getEntryRecord() {
         return entryRecord;
     }
 
-    public void setEntryRecord(TimeRecordDto entryRecord) {
+    public void setEntryRecord(TimeRecordDtoWs entryRecord) {
         this.entryRecord = entryRecord;
     }
 
-    public TimeRecordDto getExitRecord() {
+    public TimeRecordDtoWs getExitRecord() {
         return exitRecord;
     }
 
-    public void setExitRecord(TimeRecordDto exitRecord) {
+    public void setExitRecord(TimeRecordDtoWs exitRecord) {
         this.exitRecord = exitRecord;
     }
 
@@ -99,7 +99,7 @@ public class ShiftDto implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ShiftDto other = (ShiftDto) obj;
+        final ShiftDtoWs other = (ShiftDtoWs) obj;
         return Objects.equals(this.id, other.id);
     }
 }

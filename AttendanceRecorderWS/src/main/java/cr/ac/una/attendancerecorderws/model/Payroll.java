@@ -64,12 +64,12 @@ public class Payroll implements Serializable {
         this.id = id;
     }
 
-    public Payroll(PayrollDto dto) {
+    public Payroll(PayrollDtoWs dto) {
         this.id = dto.getId();
         update(dto);
     }
 
-    public void update(PayrollDto dto) {
+    public void update(PayrollDtoWs dto) {
         this.month = dto.getMonth();
         this.year = dto.getYear();
         this.totalPayment = dto.getTotalPayment();

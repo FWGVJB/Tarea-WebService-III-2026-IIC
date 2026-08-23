@@ -3,27 +3,27 @@ package cr.ac.una.attendancerecorderws.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class PayrollDetailDto implements Serializable {
+public class PayrollDetailDtoWs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private EmployeeDto employee;
+    private EmployeeDtoWs employee;
     private Double hourlyWage;
     private Double workedHours;
     private Double monthlySalary;
     private Long version;
     private Boolean modified;
 
-    public PayrollDetailDto() {
+    public PayrollDetailDtoWs() {
         this.modified = false;
     }
 
-    public PayrollDetailDto(PayrollDetail detail) {
+    public PayrollDetailDtoWs(PayrollDetail detail) {
         this();
         this.id = detail.getId();
         if (detail.getEmployee() != null) {
-            this.employee = new EmployeeDto(detail.getEmployee());
+            this.employee = new EmployeeDtoWs(detail.getEmployee());
         }
         this.hourlyWage = detail.getHourlyWage();
         this.workedHours = detail.getWorkedHours();
@@ -39,11 +39,11 @@ public class PayrollDetailDto implements Serializable {
         this.id = id;
     }
 
-    public EmployeeDto getEmployee() {
+    public EmployeeDtoWs getEmployee() {
         return employee;
     }
 
-    public void setEmployee(EmployeeDto employee) {
+    public void setEmployee(EmployeeDtoWs employee) {
         this.employee = employee;
     }
 
@@ -105,7 +105,7 @@ public class PayrollDetailDto implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PayrollDetailDto other = (PayrollDetailDto) obj;
+        final PayrollDetailDtoWs other = (PayrollDetailDtoWs) obj;
         return Objects.equals(this.id, other.id);
     }
 }

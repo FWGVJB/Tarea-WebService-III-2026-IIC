@@ -65,12 +65,12 @@ public class ShiftReport implements Serializable {
         this.id = id;
     }
 
-    public ShiftReport(ShiftReportDto dto) {
+    public ShiftReport(ShiftReportDtoWs dto) {
         this.id = dto.getId();
         update(dto);
     }
 
-    public void update(ShiftReportDto dto) {
+    public void update(ShiftReportDtoWs dto) {
         this.month = dto.getMonth();
         this.year = dto.getYear();
         if (dto.getEmployee() != null) {

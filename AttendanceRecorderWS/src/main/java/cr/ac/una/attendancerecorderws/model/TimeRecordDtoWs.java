@@ -1,25 +1,31 @@
 package cr.ac.una.attendancerecorderws.model;
 
+import cr.ac.una.attendancerecorderws.util.LocalDateTimeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class TimeRecordDto implements Serializable {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class TimeRecordDtoWs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime timestamp;
     private Boolean manuallyAdded;
     private Long version;
     private Boolean modified;
 
-    public TimeRecordDto() {
+    public TimeRecordDtoWs() {
         this.modified = false;
         this.manuallyAdded = false;
     }
 
-    public TimeRecordDto(TimeRecord timeRecord) {
+    public TimeRecordDtoWs(TimeRecord timeRecord) {
         this();
         this.id = timeRecord.getId();
         this.timestamp = timeRecord.getTimestamp();
@@ -85,7 +91,7 @@ public class TimeRecordDto implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TimeRecordDto other = (TimeRecordDto) obj;
+        final TimeRecordDtoWs other = (TimeRecordDtoWs) obj;
         return Objects.equals(this.id, other.id);
     }
 }

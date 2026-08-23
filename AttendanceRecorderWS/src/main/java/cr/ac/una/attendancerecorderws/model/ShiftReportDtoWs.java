@@ -5,30 +5,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class PayrollDto implements Serializable {
+public class ShiftReportDtoWs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
     private Integer month;
     private Integer year;
-    private Double totalPayment;
-    private List<PayrollDetailDto> details;
+    private EmployeeDtoWs employee;
+    private List<ShiftDtoWs> shifts;
     private Long version;
     private Boolean modified;
 
-    public PayrollDto() {
-        this.details = new ArrayList<>();
+    public ShiftReportDtoWs() {
+        this.shifts = new ArrayList<>();
         this.modified = false;
     }
 
-    public PayrollDto(Payroll payroll) {
+    public ShiftReportDtoWs(ShiftReport report) {
         this();
-        this.id = payroll.getId();
-        this.month = payroll.getMonth();
-        this.year = payroll.getYear();
-        this.totalPayment = payroll.getTotalPayment();
-        this.version = payroll.getVersion();
+        this.id = report.getId();
+        this.month = report.getMonth();
+        this.year = report.getYear();
+        
+        if (report.getEmployee() != null) {
+            this.employee = new EmployeeDtoWs(report.getEmployee());
+        }
+        this.version = report.getVersion();
     }
 
     public Long getId() {
@@ -55,20 +58,20 @@ public class PayrollDto implements Serializable {
         this.year = year;
     }
 
-    public Double getTotalPayment() {
-        return totalPayment;
+    public EmployeeDtoWs getEmployee() {
+        return employee;
     }
 
-    public void setTotalPayment(Double totalPayment) {
-        this.totalPayment = totalPayment;
+    public void setEmployee(EmployeeDtoWs employee) {
+        this.employee = employee;
     }
 
-    public List<PayrollDetailDto> getDetails() {
-        return details;
+    public List<ShiftDtoWs> getShifts() {
+        return shifts;
     }
 
-    public void setDetails(List<PayrollDetailDto> details) {
-        this.details = details;
+    public void setShifts(List<ShiftDtoWs> shifts) {
+        this.shifts = shifts;
     }
 
     public Long getVersion() {
@@ -89,8 +92,8 @@ public class PayrollDto implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + Objects.hashCode(this.id);
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -105,7 +108,7 @@ public class PayrollDto implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PayrollDto other = (PayrollDto) obj;
+        final ShiftReportDtoWs other = (ShiftReportDtoWs) obj;
         return Objects.equals(this.id, other.id);
     }
 }
