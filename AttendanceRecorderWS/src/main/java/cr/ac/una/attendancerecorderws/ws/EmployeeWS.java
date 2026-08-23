@@ -4,7 +4,6 @@ import cr.ac.una.attendancerecorderws.model.Employee;
 import cr.ac.una.attendancerecorderws.model.EmployeeDto;
 import cr.ac.una.attendancerecorderws.service.EmployeeService;
 import jakarta.ejb.EJB;
-import jakarta.ejb.Stateless;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @WebService(serviceName = "EmployeeWS")
-@Stateless
 public class EmployeeWS {
 
     @EJB
@@ -54,6 +52,16 @@ public class EmployeeWS {
     @WebMethod(operationName = "findEmployeeByFol")
     public EmployeeDto findEmployeeByFol(@WebParam(name = "fol") String fol) {
         Employee employee = employeeService.findEmployeeByFol(fol);
+        return employee != null ? new EmployeeDto(employee) : null;
+    }
+
+    /**
+     * Login de administradores
+     * Retorna null si folio/clave no coinciden, el empleado esta inactivo, o no es administrador
+     */
+    @WebMethod(operationName = "authenticate")
+    public EmployeeDto authenticate(@WebParam(name = "fol") String fol, @WebParam(name = "password") String password) {
+        Employee employee = employeeService.authenticate(fol, password);
         return employee != null ? new EmployeeDto(employee) : null;
     }
 }

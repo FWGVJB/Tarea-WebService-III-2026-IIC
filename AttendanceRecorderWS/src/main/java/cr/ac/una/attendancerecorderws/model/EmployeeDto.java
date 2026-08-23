@@ -1,5 +1,7 @@
 package cr.ac.una.attendancerecorderws.model;
 
+import cr.ac.una.attendancerecorderws.util.LocalDateAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -126,6 +128,7 @@ public class EmployeeDto implements Serializable {
         this.active = active;
     }
 
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     public LocalDate getBirthDate() {
         return birthDate;
     }

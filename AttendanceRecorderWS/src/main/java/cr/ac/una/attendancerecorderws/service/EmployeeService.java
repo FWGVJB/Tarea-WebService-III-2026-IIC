@@ -48,4 +48,22 @@ public class EmployeeService {
             return null;
         }
     }
+
+    /**
+     * Solo retorna el empleado si existe, si la clave coincide, si esta activo y si es administrador
+     * Retorna null si cualquiera de esas condiciones falla
+     */
+    public Employee authenticate(String fol, String password) {
+        Employee employee = findEmployeeByFol(fol);
+        if (employee == null || password == null) {
+            return null;
+        }
+        boolean passwordMatches = password.equals(employee.getPassword());
+        boolean isActive = "T".equals(employee.getActive());
+        boolean isAdministrator = "T".equals(employee.getAdministrator());
+        if (passwordMatches && isActive && isAdministrator) {
+            return employee;
+        }
+        return null;
+    }
 }
