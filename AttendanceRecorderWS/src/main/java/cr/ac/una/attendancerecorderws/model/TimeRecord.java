@@ -1,5 +1,6 @@
 package cr.ac.una.attendancerecorderws.model;
 
+import cr.ac.una.attendancerecorderws.util.LocalDateTimeAdapter;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,8 +14,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "RELOJUNA_TIME_RECORDS")
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
     @NamedQuery(name = "TimeRecord.findAll", query = "SELECT t FROM TimeRecord t"),
     @NamedQuery(name = "TimeRecord.findById", query = "SELECT t FROM TimeRecord t WHERE t.id = :id")
@@ -40,6 +45,7 @@ public class TimeRecord implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "TIME_RECORD_TIME_STAMP")
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime timestamp;
 
     @Basic(optional = false)
@@ -51,9 +57,11 @@ public class TimeRecord implements Serializable {
     @Column(name = "TIME_RECORD_VERSION")
     private Long version;
 
+    @XmlTransient
     @OneToMany(mappedBy = "exitRecord")
     private List<Shift> exitShifts;
 
+    @XmlTransient
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entryRecord")
     private List<Shift> entryShifts;
 
@@ -64,12 +72,12 @@ public class TimeRecord implements Serializable {
         this.id = id;
     }
 
-    public TimeRecord(TimeRecordDto dto) {
+    public TimeRecord(TimeRecordDtoWs dto) {
         this.id = dto.getId();
         update(dto);
     }
 
-    public void update(TimeRecordDto dto) {
+    public void update(TimeRecordDtoWs dto) {
         this.timestamp = dto.getTimestamp();
         this.manuallyAdded = (dto.getManuallyAdded() != null && dto.getManuallyAdded()) ? "T" : "F";
         this.version = dto.getVersion();
@@ -107,7 +115,6 @@ public class TimeRecord implements Serializable {
         this.version = version;
     }
 
-    @XmlTransient
     public List<Shift> getExitShifts() {
         return exitShifts;
     }
@@ -116,7 +123,6 @@ public class TimeRecord implements Serializable {
         this.exitShifts = exitShifts;
     }
 
-    @XmlTransient
     public List<Shift> getEntryShifts() {
         return entryShifts;
     }

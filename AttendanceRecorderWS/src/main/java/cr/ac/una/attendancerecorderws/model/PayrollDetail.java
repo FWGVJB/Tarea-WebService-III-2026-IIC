@@ -67,12 +67,12 @@ public class PayrollDetail implements Serializable {
         this.id = id;
     }
 
-    public PayrollDetail(PayrollDetailDto dto) {
+    public PayrollDetail(PayrollDetailDtoWs dto) {
         this.id = dto.getId();
         update(dto);
     }
 
-    public void update(PayrollDetailDto dto) {
+    public void update(PayrollDetailDtoWs dto) {
         if (dto.getEmployee() != null) {
             this.employee = new Employee(dto.getEmployee().getId());
         }

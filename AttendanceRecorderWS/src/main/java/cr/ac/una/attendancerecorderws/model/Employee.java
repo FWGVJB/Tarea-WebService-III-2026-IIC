@@ -104,12 +104,12 @@ public class Employee implements Serializable {
         this.id = id;
     }
 
-    public Employee(EmployeeDto dto) {
+    public Employee(EmployeeDtoWs dto) {
         this.id = dto.getId();
         update(dto);
     }
 
-    public void update(EmployeeDto dto) {
+    public void update(EmployeeDtoWs dto) {
         this.idCard = dto.getIdCard();
         this.fol = dto.getFol();
         this.name = dto.getName();

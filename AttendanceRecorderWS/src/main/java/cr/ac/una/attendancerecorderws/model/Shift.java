@@ -63,12 +63,12 @@ public class Shift implements Serializable {
         this.id = id;
     }
 
-    public Shift(ShiftDto dto) {
+    public Shift(ShiftDtoWs dto) {
         this.id = dto.getId();
         update(dto);
     }
 
-    public void update(ShiftDto dto) {
+    public void update(ShiftDtoWs dto) {
         if (dto.getEmployee() != null) {
             this.employee = new Employee(dto.getEmployee().getId());
         }
