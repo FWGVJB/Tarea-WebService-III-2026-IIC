@@ -5,6 +5,7 @@ import cr.ac.una.attendancerecorderws.model.PayrollDtoWs;
 import cr.ac.una.attendancerecorderws.model.PayrollDetail;
 import cr.ac.una.attendancerecorderws.model.PayrollDetailDtoWs;
 import cr.ac.una.attendancerecorderws.service.PayrollService;
+import cr.ac.una.attendancerecorderws.util.Response;
 import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -20,44 +21,60 @@ public class PayrollWS {
     private PayrollService payrollService;
 
     @WebMethod(operationName = "savePayroll")
-    public PayrollDtoWs savePayroll(@WebParam(name = "payroll") PayrollDtoWs payrollDto) {
+    public PayrollResponseWrapper savePayroll(@WebParam(name = "payroll") PayrollDtoWs payrollDto) {
         Payroll payroll = new Payroll(payrollDto);
         mapDetailsToEntity(payrollDto, payroll);
-        
-        Payroll saved = payrollService.savePayroll(payroll);
-        return toDtoWithDetails(saved);
+
+        Response response = payrollService.savePayroll(payroll);
+        PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setPayroll(toDtoWithDetails((Payroll) response.getResult("Payroll")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "updatePayroll")
-    public PayrollDtoWs updatePayroll(@WebParam(name = "payroll") PayrollDtoWs payrollDto) {
+    public PayrollResponseWrapper updatePayroll(@WebParam(name = "payroll") PayrollDtoWs payrollDto) {
         Payroll payroll = new Payroll(payrollDto);
         mapDetailsToEntity(payrollDto, payroll);
-        
-        Payroll updated = payrollService.updatePayroll(payroll);
-        return toDtoWithDetails(updated);
+
+        Response response = payrollService.updatePayroll(payroll);
+        PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setPayroll(toDtoWithDetails((Payroll) response.getResult("Payroll")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "deletePayroll")
-    public void deletePayroll(@WebParam(name = "id") Long id) {
-        payrollService.deletePayroll(id);
+    public PayrollResponseWrapper deletePayroll(@WebParam(name = "id") Long id) {
+        Response response = payrollService.deletePayroll(id);
+        return new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
     }
 
     @WebMethod(operationName = "findPayrollById")
-    public PayrollDtoWs findPayrollById(@WebParam(name = "id") Long id) {
-        Payroll payroll = payrollService.findPayrollById(id);
-        return payroll != null ? toDtoWithDetails(payroll) : null;
+    public PayrollResponseWrapper findPayrollById(@WebParam(name = "id") Long id) {
+        Response response = payrollService.findPayrollById(id);
+        PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setPayroll(toDtoWithDetails((Payroll) response.getResult("Payroll")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "findAllPayrolls")
-    public List<PayrollDtoWs> findAllPayrolls() {
-        return payrollService.findAllPayrolls()
-                .stream()
-                .map(this::toDtoWithDetails)
-                .collect(Collectors.toList());
+    public PayrollResponseWrapper findAllPayrolls() {
+        Response response = payrollService.findAllPayrolls();
+        PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            List<Payroll> payrolls = (List<Payroll>) response.getResult("Payrolls");
+            if (payrolls != null) {
+                wrapper.setPayrolls(payrolls.stream().map(this::toDtoWithDetails).collect(Collectors.toList()));
+            }
+        }
+        return wrapper;
     }
 
-
-    // METODOS AUXILIARES PARA MANEJAR LAS LISTAS DE DETALLES
     private void mapDetailsToEntity(PayrollDtoWs dto, Payroll entity) {
         if (dto.getDetails() != null) {
             entity.setDetails(new ArrayList<>());

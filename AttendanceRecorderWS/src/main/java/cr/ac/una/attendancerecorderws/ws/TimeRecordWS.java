@@ -3,6 +3,7 @@ package cr.ac.una.attendancerecorderws.ws;
 import cr.ac.una.attendancerecorderws.model.TimeRecord;
 import cr.ac.una.attendancerecorderws.model.TimeRecordDtoWs;
 import cr.ac.una.attendancerecorderws.service.TimeRecordService;
+import cr.ac.una.attendancerecorderws.util.Response;
 import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -17,35 +18,53 @@ public class TimeRecordWS {
     private TimeRecordService timeRecordService;
 
     @WebMethod(operationName = "saveTimeRecord")
-    public TimeRecordDtoWs saveTimeRecord(@WebParam(name = "timeRecord") TimeRecordDtoWs timeRecordDtoWs) {
+    public TimeRecordResponseWrapper saveTimeRecord(@WebParam(name = "timeRecord") TimeRecordDtoWs timeRecordDtoWs) {
         TimeRecord timeRecord = new TimeRecord(timeRecordDtoWs);
-        TimeRecord saved = timeRecordService.saveTimeRecord(timeRecord);
-        return new TimeRecordDtoWs(saved);
+        Response response = timeRecordService.saveTimeRecord(timeRecord);
+        TimeRecordResponseWrapper wrapper = new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setTimeRecord(new TimeRecordDtoWs((TimeRecord) response.getResult("TimeRecord")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "updateTimeRecord")
-    public TimeRecordDtoWs updateTimeRecord(@WebParam(name = "timeRecord") TimeRecordDtoWs timeRecordDtoWs) {
+    public TimeRecordResponseWrapper updateTimeRecord(@WebParam(name = "timeRecord") TimeRecordDtoWs timeRecordDtoWs) {
         TimeRecord timeRecord = new TimeRecord(timeRecordDtoWs);
-        TimeRecord updated = timeRecordService.updateTimeRecord(timeRecord);
-        return new TimeRecordDtoWs(updated);
+        Response response = timeRecordService.updateTimeRecord(timeRecord);
+        TimeRecordResponseWrapper wrapper = new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setTimeRecord(new TimeRecordDtoWs((TimeRecord) response.getResult("TimeRecord")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "deleteTimeRecord")
-    public void deleteTimeRecord(@WebParam(name = "id") Long id) {
-        timeRecordService.deleteTimeRecord(id);
+    public TimeRecordResponseWrapper deleteTimeRecord(@WebParam(name = "id") Long id) {
+        Response response = timeRecordService.deleteTimeRecord(id);
+        return new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
     }
 
     @WebMethod(operationName = "findTimeRecordById")
-    public TimeRecordDtoWs findTimeRecordById(@WebParam(name = "id") Long id) {
-        TimeRecord timeRecord = timeRecordService.findTimeRecordById(id);
-        return timeRecord != null ? new TimeRecordDtoWs(timeRecord) : null;
+    public TimeRecordResponseWrapper findTimeRecordById(@WebParam(name = "id") Long id) {
+        Response response = timeRecordService.findTimeRecordById(id);
+        TimeRecordResponseWrapper wrapper = new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setTimeRecord(new TimeRecordDtoWs((TimeRecord) response.getResult("TimeRecord")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "findAllTimeRecords")
-    public List<TimeRecordDtoWs> findAllTimeRecords() {
-        return timeRecordService.findAllTimeRecords()
-                .stream()
-                .map(TimeRecordDtoWs::new)
-                .collect(Collectors.toList());
+    public TimeRecordResponseWrapper findAllTimeRecords() {
+        Response response = timeRecordService.findAllTimeRecords();
+        TimeRecordResponseWrapper wrapper = new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            List<TimeRecord> timeRecords = (List<TimeRecord>) response.getResult("TimeRecords");
+            if (timeRecords != null) {
+                wrapper.setTimeRecords(timeRecords.stream().map(TimeRecordDtoWs::new).collect(Collectors.toList()));
+            }
+        }
+        return wrapper;
     }
 }
