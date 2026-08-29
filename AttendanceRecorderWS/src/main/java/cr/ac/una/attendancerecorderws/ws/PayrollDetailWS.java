@@ -3,6 +3,7 @@ package cr.ac.una.attendancerecorderws.ws;
 import cr.ac.una.attendancerecorderws.model.PayrollDetail;
 import cr.ac.una.attendancerecorderws.model.PayrollDetailDtoWs;
 import cr.ac.una.attendancerecorderws.service.PayrollDetailService;
+import cr.ac.una.attendancerecorderws.util.Response;
 import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -17,35 +18,53 @@ public class PayrollDetailWS {
     private PayrollDetailService payrollDetailService;
 
     @WebMethod(operationName = "savePayrollDetail")
-    public PayrollDetailDtoWs savePayrollDetail(@WebParam(name = "payrollDetail") PayrollDetailDtoWs payrollDetailDto) {
+    public PayrollDetailResponseWrapper savePayrollDetail(@WebParam(name = "payrollDetail") PayrollDetailDtoWs payrollDetailDto) {
         PayrollDetail detail = new PayrollDetail(payrollDetailDto);
-        PayrollDetail saved = payrollDetailService.savePayrollDetail(detail);
-        return new PayrollDetailDtoWs(saved);
+        Response response = payrollDetailService.savePayrollDetail(detail);
+        PayrollDetailResponseWrapper wrapper = new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setPayrollDetail(new PayrollDetailDtoWs((PayrollDetail) response.getResult("PayrollDetail")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "updatePayrollDetail")
-    public PayrollDetailDtoWs updatePayrollDetail(@WebParam(name = "payrollDetail") PayrollDetailDtoWs payrollDetailDto) {
+    public PayrollDetailResponseWrapper updatePayrollDetail(@WebParam(name = "payrollDetail") PayrollDetailDtoWs payrollDetailDto) {
         PayrollDetail detail = new PayrollDetail(payrollDetailDto);
-        PayrollDetail updated = payrollDetailService.updatePayrollDetail(detail);
-        return new PayrollDetailDtoWs(updated);
+        Response response = payrollDetailService.updatePayrollDetail(detail);
+        PayrollDetailResponseWrapper wrapper = new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setPayrollDetail(new PayrollDetailDtoWs((PayrollDetail) response.getResult("PayrollDetail")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "deletePayrollDetail")
-    public void deletePayrollDetail(@WebParam(name = "id") Long id) {
-        payrollDetailService.deletePayrollDetail(id);
+    public PayrollDetailResponseWrapper deletePayrollDetail(@WebParam(name = "id") Long id) {
+        Response response = payrollDetailService.deletePayrollDetail(id);
+        return new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
     }
 
     @WebMethod(operationName = "findPayrollDetailById")
-    public PayrollDetailDtoWs findPayrollDetailById(@WebParam(name = "id") Long id) {
-        PayrollDetail detail = payrollDetailService.findPayrollDetailById(id);
-        return detail != null ? new PayrollDetailDtoWs(detail) : null;
+    public PayrollDetailResponseWrapper findPayrollDetailById(@WebParam(name = "id") Long id) {
+        Response response = payrollDetailService.findPayrollDetailById(id);
+        PayrollDetailResponseWrapper wrapper = new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setPayrollDetail(new PayrollDetailDtoWs((PayrollDetail) response.getResult("PayrollDetail")));
+        }
+        return wrapper;
     }
 
     @WebMethod(operationName = "findAllPayrollDetails")
-    public List<PayrollDetailDtoWs> findAllPayrollDetails() {
-        return payrollDetailService.findAllPayrollDetails()
-                .stream()
-                .map(PayrollDetailDtoWs::new)
-                .collect(Collectors.toList());
+    public PayrollDetailResponseWrapper findAllPayrollDetails() {
+        Response response = payrollDetailService.findAllPayrollDetails();
+        PayrollDetailResponseWrapper wrapper = new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            List<PayrollDetail> payrollDetails = (List<PayrollDetail>) response.getResult("PayrollDetails");
+            if (payrollDetails != null) {
+                wrapper.setPayrollDetails(payrollDetails.stream().map(PayrollDetailDtoWs::new).collect(Collectors.toList()));
+            }
+        }
+        return wrapper;
     }
 }
