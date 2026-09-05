@@ -5,6 +5,7 @@ import cr.ac.una.attendancerecorderws.model.PayrollDtoWs;
 import cr.ac.una.attendancerecorderws.model.PayrollDetail;
 import cr.ac.una.attendancerecorderws.model.PayrollDetailDtoWs;
 import cr.ac.una.attendancerecorderws.service.PayrollService;
+import cr.ac.una.attendancerecorderws.util.PayrollResponseWrapper;
 import cr.ac.una.attendancerecorderws.util.Response;
 import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;

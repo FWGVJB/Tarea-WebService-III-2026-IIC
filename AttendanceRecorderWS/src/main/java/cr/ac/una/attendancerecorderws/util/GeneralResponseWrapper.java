@@ -1,6 +1,4 @@
-package cr.ac.una.attendancerecorderws.ws;
-
-import cr.ac.una.attendancerecorderws.util.ResponseCode;
+package cr.ac.una.attendancerecorderws.util;
 
 public class GeneralResponseWrapper {
     

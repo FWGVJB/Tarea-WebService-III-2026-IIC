@@ -6,6 +6,7 @@ import cr.ac.una.attendancerecorderws.model.ShiftReport;
 import cr.ac.una.attendancerecorderws.model.ShiftReportDtoWs;
 import cr.ac.una.attendancerecorderws.service.ShiftReportService;
 import cr.ac.una.attendancerecorderws.util.Response;
+import cr.ac.una.attendancerecorderws.util.ShiftReportResponseWrapper;
 import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
