@@ -4,6 +4,7 @@ import cr.ac.una.attendancerecorderws.model.TimeRecord;
 import cr.ac.una.attendancerecorderws.model.TimeRecordDtoWs;
 import cr.ac.una.attendancerecorderws.service.TimeRecordService;
 import cr.ac.una.attendancerecorderws.util.Response;
+import cr.ac.una.attendancerecorderws.util.TimeRecordResponseWrapper;
 import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;

@@ -3,6 +3,7 @@ package cr.ac.una.attendancerecorderws.ws;
 import cr.ac.una.attendancerecorderws.model.PayrollDetail;
 import cr.ac.una.attendancerecorderws.model.PayrollDetailDtoWs;
 import cr.ac.una.attendancerecorderws.service.PayrollDetailService;
+import cr.ac.una.attendancerecorderws.util.PayrollDetailResponseWrapper;
 import cr.ac.una.attendancerecorderws.util.Response;
 import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;

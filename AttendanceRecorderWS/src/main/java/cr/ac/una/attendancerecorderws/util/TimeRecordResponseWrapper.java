@@ -1,7 +1,6 @@
-package cr.ac.una.attendancerecorderws.ws;
+package cr.ac.una.attendancerecorderws.util;
 
 import cr.ac.una.attendancerecorderws.model.TimeRecordDtoWs;
-import cr.ac.una.attendancerecorderws.util.ResponseCode;
 import java.util.List;
 
 public class TimeRecordResponseWrapper extends GeneralResponseWrapper {
