@@ -30,6 +30,16 @@
             <artifactId>jasperreports-fonts</artifactId>
             <version>7.0.8</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-jdt</artifactId>
+            <version>7.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-pdf</artifactId>
+            <version>7.0.8</version>
+        </dependency>
     </dependencies>
     
     <build>
@@ -43,7 +53,6 @@
                     <target>21</target>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -52,6 +61,32 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.pro-crafting.tools</groupId>
+                <artifactId>jasperreports-maven-plugin</artifactId>
+                <version>4.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>jasper</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <compiler>net.sf.jasperreports.jdt.JRJdtCompiler</compiler>
+                    <sourceDirectory>src/main/resources/cr/ac/una/attendancerecorderws/jasper</sourceDirectory>
+                    <outputDirectory>${project.build.outputDirectory}/cr/ac/una/attendancerecorderws/jasper</outputDirectory>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.jasperreports</groupId>
+                        <artifactId>jasperreports</artifactId>
+                        <version>7.0.8</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
+        
     </build>
 </project>

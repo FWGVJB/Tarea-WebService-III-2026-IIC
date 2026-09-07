@@ -55,6 +55,19 @@ public class ShiftWS {
         }
         return wrapper;
     }
+    
+    @WebMethod(operationName = "findShiftsByEmployee")
+    public ShiftResponseWrapper findShiftsByEmployee(@WebParam(name = "employeeId") Long employeeId) {
+        Response response = shiftService.findShiftsByEmployee(employeeId);
+        ShiftResponseWrapper wrapper = new ShiftResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            List<Shift> shifts = (List<Shift>) response.getResult("Shifts");
+            if (shifts != null) {
+                wrapper.setShifts(shifts.stream().map(ShiftDtoWs::new).collect(Collectors.toList()));
+            }
+        }
+        return wrapper;
+    }
 
     @WebMethod(operationName = "findAllShifts")
     public ShiftResponseWrapper findAllShifts() {

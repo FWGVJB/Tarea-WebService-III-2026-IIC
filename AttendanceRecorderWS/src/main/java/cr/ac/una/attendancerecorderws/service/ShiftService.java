@@ -1,5 +1,6 @@
 package cr.ac.una.attendancerecorderws.service;
 
+import cr.ac.una.attendancerecorderws.model.Employee;
 import cr.ac.una.attendancerecorderws.model.Shift;
 import cr.ac.una.attendancerecorderws.util.Response;
 import cr.ac.una.attendancerecorderws.util.ResponseCode;
@@ -85,6 +86,17 @@ public class ShiftService {
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar el turno.", "findShiftById " + ex.getMessage());
         }
     }
+    
+    public Response findShiftsByEmployee(Long employeeId) {
+        try {
+            Employee employee = new Employee(employeeId);
+            List<Shift> shifts = em.createNamedQuery("Shift.findByEmployee", Shift.class).setParameter("employee", employee).getResultList();
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Shifts", shifts);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Ocurrió un error al consultar los turnos del empleado.", ex);
+            return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar los turnos del empleado.", "findShiftsByEmployee " + ex.getMessage());
+        }
+}
 
     public Response findAllShifts() {
         try {
