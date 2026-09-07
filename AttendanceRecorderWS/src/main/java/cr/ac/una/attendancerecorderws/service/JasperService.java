@@ -1,6 +1,5 @@
 package cr.ac.una.attendancerecorderws.service;
 
-import cr.ac.una.attendancerecorderws.model.Employee;
 import cr.ac.una.attendancerecorderws.model.EmployeeDtoWs;
 import cr.ac.una.attendancerecorderws.util.JasperGenerator;
 import cr.ac.una.attendancerecorderws.util.Response;
@@ -29,8 +28,8 @@ public class JasperService {
             for (Long id : idList) {
                 Response employeeResponse = employeeService.findEmployeeById(id);
                 if (Boolean.TRUE.equals(employeeResponse.getStatus())) {
-                    Employee employee = (Employee) employeeResponse.getResult("Employee");
-                    employees.add(new EmployeeDtoWs(employee));
+                    EmployeeDtoWs employee = (EmployeeDtoWs) employeeResponse.getResult("Employee");
+                    employees.add(employee);
                 }
             }
             if (employees.isEmpty()) {
