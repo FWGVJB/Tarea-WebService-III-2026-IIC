@@ -2,13 +2,12 @@ package cr.ac.una.attendancerecorderws.util;
 
 import cr.ac.una.attendancerecorderws.model.EmployeeDtoWs;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -27,13 +26,20 @@ public class JasperGenerator {
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(employeeDtosWs);
         
         Map<String, Object> parameters = new HashMap<>();
-        InputStream checkIcon = JasperGenerator.class.getResourceAsStream(CHECK_ICON_PATH);
         InputStream windowLogo = JasperGenerator.class.getResourceAsStream(WINDOW_LOGO_PATH);
-        parameters.put("CHECK_ICON", checkIcon);
         parameters.put("WINDOW_LOGO", windowLogo);
         
+        try {
+            InputStream checkIconStream = JasperGenerator.class.getResourceAsStream(CHECK_ICON_PATH);
+            byte[] checkIconBytes;
+            checkIconBytes = checkIconStream.readAllBytes();
+            parameters.put("CHECK_ICON", checkIconBytes);
+        } catch (IOException ex) {
+            System.getLogger(JasperGenerator.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            return null;
+        }
+        
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
         return outputStream.toByteArray();

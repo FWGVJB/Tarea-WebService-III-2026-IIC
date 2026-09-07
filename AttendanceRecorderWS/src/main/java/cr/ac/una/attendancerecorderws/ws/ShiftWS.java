@@ -1,5 +1,6 @@
 package cr.ac.una.attendancerecorderws.ws;
 
+import cr.ac.una.attendancerecorderws.model.Shift;
 import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
 import cr.ac.una.attendancerecorderws.service.ShiftService;
 import cr.ac.una.attendancerecorderws.util.Response;
@@ -10,6 +11,7 @@ import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebService(serviceName = "ShiftWS")
 public class ShiftWS {

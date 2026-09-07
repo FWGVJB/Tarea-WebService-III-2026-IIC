@@ -1,7 +1,7 @@
 <!-- Created with Jaspersoft Studio version 7.0.8.final using JasperReports Library version 7.0.8-6f896111  -->
 <jasperReport name="relojUNA_Employee_Information_Report" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2c927259-de57-4a6c-a580-aec9af8bb618">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<parameter name="CHECK_ICON" class="java.io.InputStream"/>
+	<parameter name="CHECK_ICON" class="java.lang.Object"/>
 	<parameter name="WINDOW_LOGO" class="java.io.InputStream"/>
 	<query language="sql"><![CDATA[]]></query>
 	<field name="id" class="java.lang.Long"/>
@@ -21,7 +21,7 @@
 			<expression><![CDATA[$P{WINDOW_LOGO}]]></expression>
 		</element>
 		<element kind="textField" uuid="7f96a5e2-bc63-4cc6-9b74-eddf6e38e4de" x="0" y="80" width="555" height="20" fontName="Serif" fontSize="14.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA["FECHA DE GENERACIÓN: " + (new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(new java.util.Date()))]]></expression>
+			<expression><![CDATA["Fecha de generación: " + (new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(new java.util.Date()))]]></expression>
 		</element>
 		<element kind="staticText" uuid="61ac5dc8-714a-4c88-b7be-7336a6528fc7" x="80" y="40" width="400" height="20" fontName="Serif" fontSize="15.0" hTextAlign="Left" vTextAlign="Bottom">
 			<text><![CDATA[REPORTE DE PERSONAL]]></text>
@@ -52,12 +52,12 @@
 				<box padding="1"/>
 				<text><![CDATA[INFORMACIÓN DE TRABAJO]]></text>
 			</element>
-			<element kind="staticText" uuid="97efb69e-b25b-4d43-85b6-df1e33699ff7" x="0" y="549" width="60" height="20" fontName="Serif" fontSize="12.0" hTextAlign="Left" vTextAlign="Middle">
+			<element kind="staticText" uuid="97efb69e-b25b-4d43-85b6-df1e33699ff7" x="0" y="549" width="50" height="20" fontName="Serif" fontSize="12.0" hTextAlign="Left" vTextAlign="Middle">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				<text><![CDATA[ACTIVO:]]></text>
+				<text><![CDATA[Activo:]]></text>
 			</element>
-			<element kind="staticText" uuid="6c61794f-3ef9-4e99-b607-c13c31deac94" x="0" y="599" width="120" height="20" fontName="Serif" fontSize="12.0" hTextAlign="Left" vTextAlign="Middle">
-				<text><![CDATA[ADMINISTRADOR:]]></text>
+			<element kind="staticText" uuid="6c61794f-3ef9-4e99-b607-c13c31deac94" x="0" y="599" width="90" height="20" fontName="Serif" fontSize="12.0" hTextAlign="Left" vTextAlign="Middle">
+				<text><![CDATA[Administrador:]]></text>
 			</element>
 			<element kind="staticText" uuid="c963659f-1608-4896-9e34-84f1ecf06d48" x="380" y="389" width="175" height="30" forecolor="#DFF7FC" backcolor="#163A4B" mode="Opaque" fontName="Serif" fontSize="18.0" hTextAlign="Center" vTextAlign="Middle">
 				<box padding="1"/>
@@ -67,29 +67,29 @@
 				<expression><![CDATA["ID: " + ($F{id} != null ? $F{id} : "")]]></expression>
 			</element>
 			<element kind="textField" uuid="b44f9e12-2042-4402-a239-e7ee2d666782" x="0" y="139" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA["CÉDULA: " + ($F{idCard} != null ? $F{idCard} : "")]]></expression>
+				<expression><![CDATA["Cédula: " + ($F{idCard} != null ? $F{idCard} : "")]]></expression>
 			</element>
 			<element kind="textField" uuid="096b155c-f2dd-488f-ac55-9b0afdd09fbb" x="0" y="189" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA["NOMBRE: " + ($F{name} != null ? $F{name} : "")]]></expression>
+				<expression><![CDATA["Nombre: " + ($F{name} != null ? $F{name} : "")]]></expression>
 			</element>
 			<element kind="textField" uuid="e1746025-666f-4f26-ae74-ab8e5a0dae82" x="0" y="239" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA["PRIMER APELLIDO: " + ($F{firstSurname} != null ? $F{firstSurname} : "")]]></expression>
+				<expression><![CDATA["Primer apellido: " + ($F{firstSurname} != null ? $F{firstSurname} : "")]]></expression>
 			</element>
 			<element kind="textField" uuid="fa2a45e2-92a8-477d-87b8-ad250b8c35be" x="0" y="289" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA["SEGUNDO APELLIDO: " + ($F{firstSurname} != null ? $F{firstSurname} : "")]]></expression>
+				<expression><![CDATA["Segundo apellido: " + ($F{firstSurname} != null ? $F{firstSurname} : "")]]></expression>
 			</element>
 			<element kind="textField" uuid="77a203bc-b0ad-4411-a73e-60cfe69e16cf" x="0" y="339" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA["FECHA DE NACIMIENTO: " + ($F{birthDate} != null ? new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(java.util.Date.from($F{birthDate}.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant())) : "")]]></expression>
+				<expression><![CDATA["Fecha de nacimiento: " + ($F{birthDate} != null ? new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(java.util.Date.from($F{birthDate}.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant())) : "")]]></expression>
 			</element>
 			<element kind="textField" uuid="4568b32b-9fe4-4443-aca3-9f3be23a1176" x="0" y="449" width="360" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA["FOLIO: " + ($F{fol} != null ? $F{fol} : "")]]></expression>
+				<expression><![CDATA["Folio: " + ($F{fol} != null ? $F{fol} : "")]]></expression>
 			</element>
 			<element kind="textField" uuid="e3e8ff48-2614-4b79-8fb2-0befa456c586" x="0" y="499" width="360" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA["SUELDO POR HORA: " + ($F{hourlyWage} !=null ? ("$" + $F{hourlyWage}) : "")]]></expression>
+				<expression><![CDATA["Sueldo por hora: " + ($F{hourlyWage} !=null ? ("$" + $F{hourlyWage}) : "")]]></expression>
 			</element>
-			<element kind="rectangle" uuid="82b315b4-d05e-4179-b422-a2522f2ff702" x="60" y="549" width="20" height="20"/>
-			<element kind="rectangle" uuid="dd015ba6-3849-4882-930e-cfe3b47c0424" x="120" y="599" width="20" height="20"/>
-			<element kind="image" uuid="8a197285-b23f-4e03-8e46-fd9e123fb725" x="60" y="549" width="20" height="20" hImageAlign="Center" vImageAlign="Middle" linkType="None" linkTarget="Self">
+			<element kind="rectangle" uuid="82b315b4-d05e-4179-b422-a2522f2ff702" x="50" y="549" width="20" height="20"/>
+			<element kind="rectangle" uuid="dd015ba6-3849-4882-930e-cfe3b47c0424" x="90" y="599" width="20" height="20"/>
+			<element kind="image" uuid="8a197285-b23f-4e03-8e46-fd9e123fb725" x="50" y="549" width="20" height="20" hImageAlign="Center" vImageAlign="Middle" linkType="None" linkTarget="Self">
 				<printWhenExpression><![CDATA[$F{active}]]></printWhenExpression>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
@@ -98,9 +98,9 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<expression><![CDATA[$P{CHECK_ICON}]]></expression>
+				<expression><![CDATA[new java.io.ByteArrayInputStream((byte[]) $P{CHECK_ICON})]]></expression>
 			</element>
-			<element kind="image" uuid="69d04c5a-046b-413e-b11a-d5b4d30bf930" x="120" y="599" width="20" height="20" hImageAlign="Center" vImageAlign="Middle" linkType="None" linkTarget="Self">
+			<element kind="image" uuid="69d04c5a-046b-413e-b11a-d5b4d30bf930" x="90" y="599" width="20" height="20" hImageAlign="Center" vImageAlign="Middle" linkType="None" linkTarget="Self">
 				<printWhenExpression><![CDATA[$F{administrator}]]></printWhenExpression>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
@@ -109,7 +109,7 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<expression><![CDATA[$P{CHECK_ICON}]]></expression>
+				<expression><![CDATA[new java.io.ByteArrayInputStream((byte[]) $P{CHECK_ICON})]]></expression>
 			</element>
 			<element kind="break" uuid="9ba981c9-df32-42b2-badf-bd523534b901" x="0" y="9" width="554" height="1"/>
 		</band>
