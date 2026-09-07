@@ -1,6 +1,5 @@
 package cr.ac.una.attendancerecorderws.ws;
 
-import cr.ac.una.attendancerecorderws.model.PayrollDetail;
 import cr.ac.una.attendancerecorderws.model.PayrollDetailDtoWs;
 import cr.ac.una.attendancerecorderws.service.PayrollDetailService;
 import cr.ac.una.attendancerecorderws.util.PayrollDetailResponseWrapper;
@@ -9,8 +8,8 @@ import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebService(serviceName = "PayrollDetailWS")
 public class PayrollDetailWS {
@@ -20,22 +19,20 @@ public class PayrollDetailWS {
 
     @WebMethod(operationName = "savePayrollDetail")
     public PayrollDetailResponseWrapper savePayrollDetail(@WebParam(name = "payrollDetail") PayrollDetailDtoWs payrollDetailDto) {
-        PayrollDetail detail = new PayrollDetail(payrollDetailDto);
-        Response response = payrollDetailService.savePayrollDetail(detail);
+        Response response = payrollDetailService.savePayrollDetail(payrollDetailDto);
         PayrollDetailResponseWrapper wrapper = new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setPayrollDetail(new PayrollDetailDtoWs((PayrollDetail) response.getResult("PayrollDetail")));
+            wrapper.setPayrollDetail((PayrollDetailDtoWs) response.getResult("PayrollDetail"));
         }
         return wrapper;
     }
 
     @WebMethod(operationName = "updatePayrollDetail")
     public PayrollDetailResponseWrapper updatePayrollDetail(@WebParam(name = "payrollDetail") PayrollDetailDtoWs payrollDetailDto) {
-        PayrollDetail detail = new PayrollDetail(payrollDetailDto);
-        Response response = payrollDetailService.updatePayrollDetail(detail);
+        Response response = payrollDetailService.updatePayrollDetail(payrollDetailDto);
         PayrollDetailResponseWrapper wrapper = new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setPayrollDetail(new PayrollDetailDtoWs((PayrollDetail) response.getResult("PayrollDetail")));
+            wrapper.setPayrollDetail((PayrollDetailDtoWs) response.getResult("PayrollDetail"));
         }
         return wrapper;
     }
@@ -51,7 +48,7 @@ public class PayrollDetailWS {
         Response response = payrollDetailService.findPayrollDetailById(id);
         PayrollDetailResponseWrapper wrapper = new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setPayrollDetail(new PayrollDetailDtoWs((PayrollDetail) response.getResult("PayrollDetail")));
+            wrapper.setPayrollDetail((PayrollDetailDtoWs) response.getResult("PayrollDetail"));
         }
         return wrapper;
     }
@@ -61,10 +58,14 @@ public class PayrollDetailWS {
         Response response = payrollDetailService.findAllPayrollDetails();
         PayrollDetailResponseWrapper wrapper = new PayrollDetailResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            List<PayrollDetail> payrollDetails = (List<PayrollDetail>) response.getResult("PayrollDetails");
-            if (payrollDetails != null) {
-                wrapper.setPayrollDetails(payrollDetails.stream().map(PayrollDetailDtoWs::new).collect(Collectors.toList()));
+            List payrollDetailResultList = (List) response.getResult("PayrollDetails");
+            List<PayrollDetailDtoWs> payrollDetails = new ArrayList<>();
+            if (payrollDetailResultList != null) {
+                for (Object obj : payrollDetailResultList) {
+                    payrollDetails.add((PayrollDetailDtoWs) obj);
+                }
             }
+            wrapper.setPayrollDetails(payrollDetails);
         }
         return wrapper;
     }

@@ -16,6 +16,7 @@ import jakarta.persistence.Version;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,6 +75,18 @@ public class Payroll implements Serializable {
         this.year = dto.getYear();
         this.totalPayment = dto.getTotalPayment();
         this.version = dto.getVersion();
+        if (this.details == null) {
+            this.details = new ArrayList<>();
+        } else {
+            this.details.clear();
+        }
+        if (dto.getDetails() != null) {
+            for (PayrollDetailDtoWs detailDto : dto.getDetails()) {
+                PayrollDetail detail = new PayrollDetail(detailDto);
+                detail.setPayroll(this);
+                this.details.add(detail);
+            }
+        }
     }
 
     public Long getId() {
@@ -148,5 +161,4 @@ public class Payroll implements Serializable {
     public String toString() {
         return "cr.ac.una.attendancerecorderws.model.Payroll[ payrollId=" + id + " ]";
     }
-    
 }

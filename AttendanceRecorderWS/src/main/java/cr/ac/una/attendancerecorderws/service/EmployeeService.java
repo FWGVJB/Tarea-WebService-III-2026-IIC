@@ -1,6 +1,7 @@
 package cr.ac.una.attendancerecorderws.service;
 
 import cr.ac.una.attendancerecorderws.model.Employee;
+import cr.ac.una.attendancerecorderws.model.EmployeeDtoWs;
 import cr.ac.una.attendancerecorderws.util.Response;
 import cr.ac.una.attendancerecorderws.util.ResponseCode;
 import jakarta.ejb.LocalBean;
@@ -9,7 +10,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,26 +26,31 @@ public class EmployeeService {
     @PersistenceContext(unitName = "AttendanceRecorderWsPU")
     private EntityManager em;
 
-    public Response saveEmployee(Employee employee) {
+    public Response saveEmployee(EmployeeDtoWs employeeDto) {
         try {
+            Employee employee = new Employee(employeeDto);
             em.persist(employee);
             em.flush();
-            em.refresh(employee);
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", employee);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", new EmployeeDtoWs(employee));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al guardar el empleado.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al guardar el empleado.", "saveEmployee " + ex.getMessage());
         }
     }
 
-    public Response updateEmployee(Employee employee) {
+    public Response updateEmployee(EmployeeDtoWs employeeDto) {
         try {
-            if (employee.getId() == null || em.find(Employee.class, employee.getId()) == null) {
+            if (employeeDto.getId() == null) {
+                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el empleado a modificar.", "updateEmployee Id Null");
+            }
+            Employee employee = em.find(Employee.class, employeeDto.getId());
+            if (employee == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el empleado a modificar.", "updateEmployee NoResultException");
             }
+            employee.update(employeeDto);
             employee = em.merge(employee);
             em.flush();
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", employee);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", new EmployeeDtoWs(employee));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al actualizar el empleado.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al actualizar el empleado.", "updateEmployee " + ex.getMessage());
@@ -77,7 +85,7 @@ public class EmployeeService {
             if (employee == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No existe un empleado con el código ingresado.", "findEmployeeById NoResultException");
             }
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", employee);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", new EmployeeDtoWs(employee));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar el empleado.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar el empleado.", "findEmployeeById " + ex.getMessage());
@@ -87,7 +95,11 @@ public class EmployeeService {
     public Response findAllEmployees() {
         try {
             List<Employee> employees = em.createNamedQuery("Employee.findAll", Employee.class).getResultList();
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Employees", employees);
+            List<EmployeeDtoWs> employeesDto = new ArrayList<>();
+            for (Employee employee : employees) {
+                employeesDto.add(new EmployeeDtoWs(employee));
+            }
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Employees", employeesDto);
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar los empleados.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar los empleados.", "findAllEmployees " + ex.getMessage());
@@ -100,10 +112,7 @@ public class EmployeeService {
             if (employee == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No existe un empleado con el folio ingresado.", "findEmployeeByFol NoResultException");
             }
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", employee);
-        } catch (NonUniqueResultException ex) {
-            LOG.log(Level.SEVERE, "Ocurrió un error al consultar el empleado.", ex);
-            return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar el empleado.", "findEmployeeByFol NonUniqueResultException");
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", new EmployeeDtoWs(employee));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar el empleado.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar el empleado.", "findEmployeeByFol " + ex.getMessage());
@@ -119,8 +128,9 @@ public class EmployeeService {
             boolean passwordMatches = password.equals(employee.getPassword());
             boolean isActive = "true".equals(employee.getActive());
             boolean isAdministrator = "true".equals(employee.getAdministrator());
+            
             if (passwordMatches && isActive && isAdministrator) {
-                return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", employee);
+                return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", new EmployeeDtoWs(employee));
             }
             return new Response(false, ResponseCode.ACCESS_ERROR, "Credenciales inválidas.", "authenticate invalid credentials");
         } catch (Exception ex) {

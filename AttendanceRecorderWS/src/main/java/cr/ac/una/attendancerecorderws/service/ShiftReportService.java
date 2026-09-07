@@ -1,6 +1,9 @@
 package cr.ac.una.attendancerecorderws.service;
 
+import cr.ac.una.attendancerecorderws.model.Shift;
+import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
 import cr.ac.una.attendancerecorderws.model.ShiftReport;
+import cr.ac.una.attendancerecorderws.model.ShiftReportDtoWs;
 import cr.ac.una.attendancerecorderws.util.Response;
 import cr.ac.una.attendancerecorderws.util.ResponseCode;
 import jakarta.ejb.LocalBean;
@@ -8,6 +11,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,32 +25,31 @@ public class ShiftReportService {
     @PersistenceContext(unitName = "AttendanceRecorderWsPU")
     private EntityManager em;
 
-    public Response saveShiftReport(ShiftReport shiftReport) {
+    public Response saveShiftReport(ShiftReportDtoWs shiftReportDto) {
         try {
+            ShiftReport shiftReport = new ShiftReport(shiftReportDto);
             em.persist(shiftReport);
             em.flush();
-            em.refresh(shiftReport);
-            if (shiftReport.getShifts() != null) {
-                shiftReport.getShifts().size();
-            }
-            return new Response(true, ResponseCode.SUCCESS, "", "", "ShiftReport", shiftReport);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "ShiftReport", convertToDtoWithDetails(shiftReport));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al guardar el reporte de turnos.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al guardar el reporte de turnos.", "saveShiftReport " + ex.getMessage());
         }
     }
 
-    public Response updateShiftReport(ShiftReport shiftReport) {
+    public Response updateShiftReport(ShiftReportDtoWs shiftReportDto) {
         try {
-            if (shiftReport.getId() == null || em.find(ShiftReport.class, shiftReport.getId()) == null) {
+            if (shiftReportDto.getId() == null) {
+                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el reporte de turnos a modificar.", "updateShiftReport Id Null");
+            }
+            ShiftReport shiftReport = em.find(ShiftReport.class, shiftReportDto.getId());
+            if (shiftReport == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el reporte de turnos a modificar.", "updateShiftReport NoResultException");
             }
+            shiftReport.update(shiftReportDto);
             shiftReport = em.merge(shiftReport);
             em.flush();
-            if (shiftReport.getShifts() != null) {
-                shiftReport.getShifts().size();
-            }
-            return new Response(true, ResponseCode.SUCCESS, "", "", "ShiftReport", shiftReport);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "ShiftReport", convertToDtoWithDetails(shiftReport));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al actualizar el reporte de turnos.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al actualizar el reporte de turnos.", "updateShiftReport " + ex.getMessage());
@@ -81,10 +84,7 @@ public class ShiftReportService {
             if (shiftReport == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No existe un reporte de turnos con el código ingresado.", "findShiftReportById NoResultException");
             }
-            if (shiftReport.getShifts() != null) {
-                shiftReport.getShifts().size();
-            }
-            return new Response(true, ResponseCode.SUCCESS, "", "", "ShiftReport", shiftReport);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "ShiftReport", convertToDtoWithDetails(shiftReport));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar el reporte de turnos.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar el reporte de turnos.", "findShiftReportById " + ex.getMessage());
@@ -94,15 +94,27 @@ public class ShiftReportService {
     public Response findAllShiftReports() {
         try {
             List<ShiftReport> shiftReports = em.createNamedQuery("ShiftReport.findAll", ShiftReport.class).getResultList();
+            List<ShiftReportDtoWs> shiftReportsDto = new ArrayList<>();
             for (ShiftReport shiftReport : shiftReports) {
-                if (shiftReport.getShifts() != null) {
-                    shiftReport.getShifts().size();
-                }
+                shiftReportsDto.add(convertToDtoWithDetails(shiftReport));
             }
-            return new Response(true, ResponseCode.SUCCESS, "", "", "ShiftReports", shiftReports);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "ShiftReports", shiftReportsDto);
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar los reportes de turnos.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar los reportes de turnos.", "findAllShiftReports " + ex.getMessage());
         }
+    }
+
+    private ShiftReportDtoWs convertToDtoWithDetails(ShiftReport shiftReport) {
+        ShiftReportDtoWs dto = new ShiftReportDtoWs(shiftReport);
+        if (shiftReport.getShifts() != null) {
+            if (dto.getShifts() == null) {
+                dto.setShifts(new ArrayList<>());
+            }
+            for (Shift shift : shiftReport.getShifts()) {
+                dto.getShifts().add(new ShiftDtoWs(shift));
+            }
+        }
+        return dto;
     }
 }

@@ -1,6 +1,5 @@
 package cr.ac.una.attendancerecorderws.ws;
 
-import cr.ac.una.attendancerecorderws.model.TimeRecord;
 import cr.ac.una.attendancerecorderws.model.TimeRecordDtoWs;
 import cr.ac.una.attendancerecorderws.service.TimeRecordService;
 import cr.ac.una.attendancerecorderws.util.Response;
@@ -9,8 +8,8 @@ import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebService(serviceName = "TimeRecordWS")
 public class TimeRecordWS {
@@ -20,22 +19,20 @@ public class TimeRecordWS {
 
     @WebMethod(operationName = "saveTimeRecord")
     public TimeRecordResponseWrapper saveTimeRecord(@WebParam(name = "timeRecord") TimeRecordDtoWs timeRecordDtoWs) {
-        TimeRecord timeRecord = new TimeRecord(timeRecordDtoWs);
-        Response response = timeRecordService.saveTimeRecord(timeRecord);
+        Response response = timeRecordService.saveTimeRecord(timeRecordDtoWs);
         TimeRecordResponseWrapper wrapper = new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setTimeRecord(new TimeRecordDtoWs((TimeRecord) response.getResult("TimeRecord")));
+            wrapper.setTimeRecord((TimeRecordDtoWs) response.getResult("TimeRecord"));
         }
         return wrapper;
     }
 
     @WebMethod(operationName = "updateTimeRecord")
     public TimeRecordResponseWrapper updateTimeRecord(@WebParam(name = "timeRecord") TimeRecordDtoWs timeRecordDtoWs) {
-        TimeRecord timeRecord = new TimeRecord(timeRecordDtoWs);
-        Response response = timeRecordService.updateTimeRecord(timeRecord);
+        Response response = timeRecordService.updateTimeRecord(timeRecordDtoWs);
         TimeRecordResponseWrapper wrapper = new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setTimeRecord(new TimeRecordDtoWs((TimeRecord) response.getResult("TimeRecord")));
+            wrapper.setTimeRecord((TimeRecordDtoWs) response.getResult("TimeRecord"));
         }
         return wrapper;
     }
@@ -51,7 +48,7 @@ public class TimeRecordWS {
         Response response = timeRecordService.findTimeRecordById(id);
         TimeRecordResponseWrapper wrapper = new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setTimeRecord(new TimeRecordDtoWs((TimeRecord) response.getResult("TimeRecord")));
+            wrapper.setTimeRecord((TimeRecordDtoWs) response.getResult("TimeRecord"));
         }
         return wrapper;
     }
@@ -61,10 +58,14 @@ public class TimeRecordWS {
         Response response = timeRecordService.findAllTimeRecords();
         TimeRecordResponseWrapper wrapper = new TimeRecordResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            List<TimeRecord> timeRecords = (List<TimeRecord>) response.getResult("TimeRecords");
-            if (timeRecords != null) {
-                wrapper.setTimeRecords(timeRecords.stream().map(TimeRecordDtoWs::new).collect(Collectors.toList()));
+            List timeRecordResultList = (List) response.getResult("TimeRecords");
+            List<TimeRecordDtoWs> timeRecords = new ArrayList<>();
+            if (timeRecordResultList != null) {
+                for (Object obj : timeRecordResultList) {
+                    timeRecords.add((TimeRecordDtoWs) obj);
+                }
             }
+            wrapper.setTimeRecords(timeRecords);
         }
         return wrapper;
     }

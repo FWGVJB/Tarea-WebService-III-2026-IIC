@@ -1,6 +1,8 @@
 package cr.ac.una.attendancerecorderws.service;
 
 import cr.ac.una.attendancerecorderws.model.Shift;
+import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
+import cr.ac.una.attendancerecorderws.model.ShiftReport;
 import cr.ac.una.attendancerecorderws.util.Response;
 import cr.ac.una.attendancerecorderws.util.ResponseCode;
 import jakarta.ejb.LocalBean;
@@ -8,6 +10,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,30 +24,35 @@ public class ShiftService {
     @PersistenceContext(unitName = "AttendanceRecorderWsPU")
     private EntityManager em;
 
-    public Response saveShift(Shift shift) {
+    public Response saveShift(ShiftDtoWs shiftDto) {
         try {
+            Shift shift = new Shift(shiftDto);
             em.persist(shift);
             em.flush();
-            em.refresh(shift);
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Shift", shift);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Shift", new ShiftDtoWs(shift));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al guardar el turno.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al guardar el turno.", "saveShift " + ex.getMessage());
         }
     }
 
-    public Response updateShift(Shift shift) {
+    public Response updateShift(ShiftDtoWs shiftDto) {
         try {
-            if (shift.getId() != null) {
-                Shift existingShift = em.find(Shift.class, shift.getId());
-                if (existingShift == null) {
-                    return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el turno a modificar.", "updateShift NoResultException");
-                }
-                shift.setShiftReport(existingShift.getShiftReport());
+            if (shiftDto.getId() == null) {
+                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el turno a modificar.", "updateShift Id Null");
             }
+            Shift shift = em.find(Shift.class, shiftDto.getId());
+            if (shift == null) {
+                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el turno a modificar.", "updateShift NoResultException");
+            }
+
+            ShiftReport existingReport = shift.getShiftReport();
+            shift.update(shiftDto);
+            shift.setShiftReport(existingReport);
+            
             shift = em.merge(shift);
             em.flush();
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Shift", shift);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Shift", new ShiftDtoWs(shift));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al actualizar el turno.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al actualizar el turno.", "updateShift " + ex.getMessage());
@@ -79,7 +87,7 @@ public class ShiftService {
             if (shift == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No existe un turno con el código ingresado.", "findShiftById NoResultException");
             }
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Shift", shift);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Shift", new ShiftDtoWs(shift));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar el turno.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar el turno.", "findShiftById " + ex.getMessage());
@@ -89,7 +97,11 @@ public class ShiftService {
     public Response findAllShifts() {
         try {
             List<Shift> shifts = em.createNamedQuery("Shift.findAll", Shift.class).getResultList();
-            return new Response(true, ResponseCode.SUCCESS, "", "", "Shifts", shifts);
+            List<ShiftDtoWs> shiftsDto = new ArrayList<>();
+            for (Shift shift : shifts) {
+                shiftsDto.add(new ShiftDtoWs(shift));
+            }
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Shifts", shiftsDto);
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar los turnos.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar los turnos.", "findAllShifts " + ex.getMessage());

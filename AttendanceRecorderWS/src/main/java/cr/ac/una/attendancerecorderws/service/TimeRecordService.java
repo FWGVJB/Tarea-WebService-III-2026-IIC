@@ -1,6 +1,7 @@
 package cr.ac.una.attendancerecorderws.service;
 
 import cr.ac.una.attendancerecorderws.model.TimeRecord;
+import cr.ac.una.attendancerecorderws.model.TimeRecordDtoWs;
 import cr.ac.una.attendancerecorderws.util.Response;
 import cr.ac.una.attendancerecorderws.util.ResponseCode;
 import jakarta.ejb.LocalBean;
@@ -8,6 +9,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,26 +23,31 @@ public class TimeRecordService {
     @PersistenceContext(unitName = "AttendanceRecorderWsPU")
     private EntityManager em;
 
-    public Response saveTimeRecord(TimeRecord timeRecord) {
+    public Response saveTimeRecord(TimeRecordDtoWs timeRecordDto) {
         try {
+            TimeRecord timeRecord = new TimeRecord(timeRecordDto);
             em.persist(timeRecord);
             em.flush();
-            em.refresh(timeRecord);
-            return new Response(true, ResponseCode.SUCCESS, "", "", "TimeRecord", timeRecord);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "TimeRecord", new TimeRecordDtoWs(timeRecord));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al guardar la marca.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al guardar la marca.", "saveTimeRecord " + ex.getMessage());
         }
     }
 
-    public Response updateTimeRecord(TimeRecord timeRecord) {
+    public Response updateTimeRecord(TimeRecordDtoWs timeRecordDto) {
         try {
-            if (timeRecord.getId() == null || em.find(TimeRecord.class, timeRecord.getId()) == null) {
+            if (timeRecordDto.getId() == null) {
+                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró la marca a modificar.", "updateTimeRecord Id Null");
+            }
+            TimeRecord timeRecord = em.find(TimeRecord.class, timeRecordDto.getId());
+            if (timeRecord == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró la marca a modificar.", "updateTimeRecord NoResultException");
             }
+            timeRecord.update(timeRecordDto);
             timeRecord = em.merge(timeRecord);
             em.flush();
-            return new Response(true, ResponseCode.SUCCESS, "", "", "TimeRecord", timeRecord);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "TimeRecord", new TimeRecordDtoWs(timeRecord));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al actualizar la marca.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al actualizar la marca.", "updateTimeRecord " + ex.getMessage());
@@ -75,7 +82,7 @@ public class TimeRecordService {
             if (timeRecord == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No existe una marca con el código ingresado.", "findTimeRecordById NoResultException");
             }
-            return new Response(true, ResponseCode.SUCCESS, "", "", "TimeRecord", timeRecord);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "TimeRecord", new TimeRecordDtoWs(timeRecord));
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar la marca.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar la marca.", "findTimeRecordById " + ex.getMessage());
@@ -85,7 +92,11 @@ public class TimeRecordService {
     public Response findAllTimeRecords() {
         try {
             List<TimeRecord> timeRecords = em.createNamedQuery("TimeRecord.findAll", TimeRecord.class).getResultList();
-            return new Response(true, ResponseCode.SUCCESS, "", "", "TimeRecords", timeRecords);
+            List<TimeRecordDtoWs> timeRecordsDto = new ArrayList<>();
+            for (TimeRecord timeRecord : timeRecords) {
+                timeRecordsDto.add(new TimeRecordDtoWs(timeRecord));
+            }
+            return new Response(true, ResponseCode.SUCCESS, "", "", "TimeRecords", timeRecordsDto);
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al consultar las marcas.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar las marcas.", "findAllTimeRecords " + ex.getMessage());

@@ -1,9 +1,6 @@
 package cr.ac.una.attendancerecorderws.ws;
 
-import cr.ac.una.attendancerecorderws.model.Payroll;
 import cr.ac.una.attendancerecorderws.model.PayrollDtoWs;
-import cr.ac.una.attendancerecorderws.model.PayrollDetail;
-import cr.ac.una.attendancerecorderws.model.PayrollDetailDtoWs;
 import cr.ac.una.attendancerecorderws.service.PayrollService;
 import cr.ac.una.attendancerecorderws.util.PayrollResponseWrapper;
 import cr.ac.una.attendancerecorderws.util.Response;
@@ -13,7 +10,6 @@ import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebService(serviceName = "PayrollWS")
 public class PayrollWS {
@@ -23,26 +19,30 @@ public class PayrollWS {
 
     @WebMethod(operationName = "savePayroll")
     public PayrollResponseWrapper savePayroll(@WebParam(name = "payroll") PayrollDtoWs payrollDto) {
-        Payroll payroll = new Payroll(payrollDto);
-        mapDetailsToEntity(payrollDto, payroll);
-
-        Response response = payrollService.savePayroll(payroll);
+        Response response = payrollService.savePayroll(payrollDto);
         PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setPayroll(toDtoWithDetails((Payroll) response.getResult("Payroll")));
+            wrapper.setPayroll((PayrollDtoWs) response.getResult("Payroll"));
+        }
+        return wrapper;
+    }
+
+    @WebMethod(operationName = "generatePayroll")
+    public PayrollResponseWrapper generatePayroll(@WebParam(name = "month") Integer month, @WebParam(name = "year") Integer year) {
+        Response response = payrollService.generatePayroll(month, year);
+        PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setPayroll((PayrollDtoWs) response.getResult("Payroll"));
         }
         return wrapper;
     }
 
     @WebMethod(operationName = "updatePayroll")
     public PayrollResponseWrapper updatePayroll(@WebParam(name = "payroll") PayrollDtoWs payrollDto) {
-        Payroll payroll = new Payroll(payrollDto);
-        mapDetailsToEntity(payrollDto, payroll);
-
-        Response response = payrollService.updatePayroll(payroll);
+        Response response = payrollService.updatePayroll(payrollDto);
         PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setPayroll(toDtoWithDetails((Payroll) response.getResult("Payroll")));
+            wrapper.setPayroll((PayrollDtoWs) response.getResult("Payroll"));
         }
         return wrapper;
     }
@@ -58,7 +58,7 @@ public class PayrollWS {
         Response response = payrollService.findPayrollById(id);
         PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setPayroll(toDtoWithDetails((Payroll) response.getResult("Payroll")));
+            wrapper.setPayroll((PayrollDtoWs) response.getResult("Payroll"));
         }
         return wrapper;
     }
@@ -68,32 +68,15 @@ public class PayrollWS {
         Response response = payrollService.findAllPayrolls();
         PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            List<Payroll> payrolls = (List<Payroll>) response.getResult("Payrolls");
-            if (payrolls != null) {
-                wrapper.setPayrolls(payrolls.stream().map(this::toDtoWithDetails).collect(Collectors.toList()));
+            List payrollResultList = (List) response.getResult("Payrolls");
+            List<PayrollDtoWs> payrolls = new ArrayList<>();
+            if (payrollResultList != null) {
+                for (Object obj : payrollResultList) {
+                    payrolls.add((PayrollDtoWs) obj);
+                }
             }
+            wrapper.setPayrolls(payrolls);
         }
         return wrapper;
-    }
-
-    private void mapDetailsToEntity(PayrollDtoWs dto, Payroll entity) {
-        if (dto.getDetails() != null) {
-            entity.setDetails(new ArrayList<>());
-            for (PayrollDetailDtoWs detailDto : dto.getDetails()) {
-                PayrollDetail detail = new PayrollDetail(detailDto);
-                detail.setPayroll(entity);
-                entity.getDetails().add(detail);
-            }
-        }
-    }
-
-    private PayrollDtoWs toDtoWithDetails(Payroll entity) {
-        PayrollDtoWs dto = new PayrollDtoWs(entity);
-        if (entity.getDetails() != null) {
-            for (PayrollDetail detail : entity.getDetails()) {
-                dto.getDetails().add(new PayrollDetailDtoWs(detail));
-            }
-        }
-        return dto;
     }
 }
