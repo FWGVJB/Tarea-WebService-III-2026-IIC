@@ -1,6 +1,5 @@
 package cr.ac.una.attendancerecorderws.ws;
 
-import cr.ac.una.attendancerecorderws.model.Employee;
 import cr.ac.una.attendancerecorderws.model.EmployeeDtoWs;
 import cr.ac.una.attendancerecorderws.service.EmployeeService;
 import cr.ac.una.attendancerecorderws.util.EmployeeResponseWrapper;
@@ -9,8 +8,8 @@ import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebService(serviceName = "EmployeeWS")
 public class EmployeeWS {
@@ -20,22 +19,20 @@ public class EmployeeWS {
 
     @WebMethod(operationName = "saveEmployee")
     public EmployeeResponseWrapper saveEmployee(@WebParam(name = "employee") EmployeeDtoWs employeeDto) {
-        Employee employee = new Employee(employeeDto);
-        Response response = employeeService.saveEmployee(employee);
+        Response response = employeeService.saveEmployee(employeeDto);
         EmployeeResponseWrapper wrapper = new EmployeeResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setEmployee(new EmployeeDtoWs((Employee) response.getResult("Employee")));
+            wrapper.setEmployee((EmployeeDtoWs) response.getResult("Employee"));
         }
         return wrapper;
     }
 
     @WebMethod(operationName = "updateEmployee")
     public EmployeeResponseWrapper updateEmployee(@WebParam(name = "employee") EmployeeDtoWs employeeDto) {
-        Employee employee = new Employee(employeeDto);
-        Response response = employeeService.updateEmployee(employee);
+        Response response = employeeService.updateEmployee(employeeDto);
         EmployeeResponseWrapper wrapper = new EmployeeResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setEmployee(new EmployeeDtoWs((Employee) response.getResult("Employee")));
+            wrapper.setEmployee((EmployeeDtoWs) response.getResult("Employee"));
         }
         return wrapper;
     }
@@ -51,7 +48,7 @@ public class EmployeeWS {
         Response response = employeeService.findEmployeeById(id);
         EmployeeResponseWrapper wrapper = new EmployeeResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setEmployee(new EmployeeDtoWs((Employee) response.getResult("Employee")));
+            wrapper.setEmployee((EmployeeDtoWs) response.getResult("Employee"));
         }
         return wrapper;
     }
@@ -61,10 +58,14 @@ public class EmployeeWS {
         Response response = employeeService.findAllEmployees();
         EmployeeResponseWrapper wrapper = new EmployeeResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            List<Employee> employees = (List<Employee>) response.getResult("Employees");
-            if (employees != null) {
-                wrapper.setEmployees(employees.stream().map(EmployeeDtoWs::new).collect(Collectors.toList()));
+            List employeeResultList = (List) response.getResult("Employees");
+            List<EmployeeDtoWs> employees = new ArrayList<>();
+            if (employeeResultList != null) {
+                for (Object obj : employeeResultList) {
+                    employees.add((EmployeeDtoWs) obj);
+                }
             }
+            wrapper.setEmployees(employees);
         }
         return wrapper;
     }
@@ -74,7 +75,7 @@ public class EmployeeWS {
         Response response = employeeService.findEmployeeByFol(fol);
         EmployeeResponseWrapper wrapper = new EmployeeResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setEmployee(new EmployeeDtoWs((Employee) response.getResult("Employee")));
+            wrapper.setEmployee((EmployeeDtoWs) response.getResult("Employee"));
         }
         return wrapper;
     }
@@ -84,7 +85,7 @@ public class EmployeeWS {
         Response response = employeeService.authenticate(fol, password);
         EmployeeResponseWrapper wrapper = new EmployeeResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setEmployee(new EmployeeDtoWs((Employee) response.getResult("Employee")));
+            wrapper.setEmployee((EmployeeDtoWs) response.getResult("Employee"));
         }
         return wrapper;
     }

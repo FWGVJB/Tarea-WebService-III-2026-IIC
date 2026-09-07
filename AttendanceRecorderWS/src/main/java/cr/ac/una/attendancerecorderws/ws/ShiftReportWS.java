@@ -1,8 +1,5 @@
 package cr.ac.una.attendancerecorderws.ws;
 
-import cr.ac.una.attendancerecorderws.model.Shift;
-import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
-import cr.ac.una.attendancerecorderws.model.ShiftReport;
 import cr.ac.una.attendancerecorderws.model.ShiftReportDtoWs;
 import cr.ac.una.attendancerecorderws.service.ShiftReportService;
 import cr.ac.una.attendancerecorderws.util.Response;
@@ -13,7 +10,6 @@ import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebService(serviceName = "ShiftReportWS")
 public class ShiftReportWS {
@@ -23,26 +19,20 @@ public class ShiftReportWS {
 
     @WebMethod(operationName = "saveShiftReport")
     public ShiftReportResponseWrapper saveShiftReport(@WebParam(name = "shiftReport") ShiftReportDtoWs shiftReportDtoWs) {
-        ShiftReport shiftReport = new ShiftReport(shiftReportDtoWs);
-        mapShiftsToEntity(shiftReportDtoWs, shiftReport);
-
-        Response response = shiftReportService.saveShiftReport(shiftReport);
+        Response response = shiftReportService.saveShiftReport(shiftReportDtoWs);
         ShiftReportResponseWrapper wrapper = new ShiftReportResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setShiftReport(toDtoWithShifts((ShiftReport) response.getResult("ShiftReport")));
+            wrapper.setShiftReport((ShiftReportDtoWs) response.getResult("ShiftReport"));
         }
         return wrapper;
     }
 
     @WebMethod(operationName = "updateShiftReport")
     public ShiftReportResponseWrapper updateShiftReport(@WebParam(name = "shiftReport") ShiftReportDtoWs shiftReportDtoWs) {
-        ShiftReport shiftReport = new ShiftReport(shiftReportDtoWs);
-        mapShiftsToEntity(shiftReportDtoWs, shiftReport);
-
-        Response response = shiftReportService.updateShiftReport(shiftReport);
+        Response response = shiftReportService.updateShiftReport(shiftReportDtoWs);
         ShiftReportResponseWrapper wrapper = new ShiftReportResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setShiftReport(toDtoWithShifts((ShiftReport) response.getResult("ShiftReport")));
+            wrapper.setShiftReport((ShiftReportDtoWs) response.getResult("ShiftReport"));
         }
         return wrapper;
     }
@@ -58,7 +48,7 @@ public class ShiftReportWS {
         Response response = shiftReportService.findShiftReportById(id);
         ShiftReportResponseWrapper wrapper = new ShiftReportResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setShiftReport(toDtoWithShifts((ShiftReport) response.getResult("ShiftReport")));
+            wrapper.setShiftReport((ShiftReportDtoWs) response.getResult("ShiftReport"));
         }
         return wrapper;
     }
@@ -68,32 +58,15 @@ public class ShiftReportWS {
         Response response = shiftReportService.findAllShiftReports();
         ShiftReportResponseWrapper wrapper = new ShiftReportResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            List<ShiftReport> shiftReports = (List<ShiftReport>) response.getResult("ShiftReports");
-            if (shiftReports != null) {
-                wrapper.setShiftReports(shiftReports.stream().map(this::toDtoWithShifts).collect(Collectors.toList()));
+            List shiftReportResultList = (List) response.getResult("ShiftReports");
+            List<ShiftReportDtoWs> shiftReports = new ArrayList<>();
+            if (shiftReportResultList != null) {
+                for (Object obj : shiftReportResultList) {
+                    shiftReports.add((ShiftReportDtoWs) obj);
+                }
             }
+            wrapper.setShiftReports(shiftReports);
         }
         return wrapper;
-    }
-
-    private void mapShiftsToEntity(ShiftReportDtoWs shiftReportDtoWs, ShiftReport shiftReport) {
-        if (shiftReportDtoWs.getShifts() != null) {
-            shiftReport.setShifts(new ArrayList<>());
-            for (ShiftDtoWs shiftDtoWs : shiftReportDtoWs.getShifts()) {
-                Shift shift = new Shift(shiftDtoWs);
-                shift.setShiftReport(shiftReport);
-                shiftReport.getShifts().add(shift);
-            }
-        }
-    }
-
-    private ShiftReportDtoWs toDtoWithShifts(ShiftReport shiftReport) {
-        ShiftReportDtoWs shiftReportDtoWs = new ShiftReportDtoWs(shiftReport);
-        if (shiftReport.getShifts() != null) {
-            for (Shift shift : shiftReport.getShifts()) {
-                shiftReportDtoWs.getShifts().add(new ShiftDtoWs(shift));
-            }
-        }
-        return shiftReportDtoWs;
     }
 }

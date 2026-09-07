@@ -1,6 +1,5 @@
 package cr.ac.una.attendancerecorderws.ws;
 
-import cr.ac.una.attendancerecorderws.model.Shift;
 import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
 import cr.ac.una.attendancerecorderws.service.ShiftService;
 import cr.ac.una.attendancerecorderws.util.Response;
@@ -9,8 +8,8 @@ import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebService(serviceName = "ShiftWS")
 public class ShiftWS {
@@ -20,22 +19,20 @@ public class ShiftWS {
 
     @WebMethod(operationName = "saveShift")
     public ShiftResponseWrapper saveShift(@WebParam(name = "shift") ShiftDtoWs shiftDto) {
-        Shift shift = new Shift(shiftDto);
-        Response response = shiftService.saveShift(shift);
+        Response response = shiftService.saveShift(shiftDto);
         ShiftResponseWrapper wrapper = new ShiftResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setShift(new ShiftDtoWs((Shift) response.getResult("Shift")));
+            wrapper.setShift((ShiftDtoWs) response.getResult("Shift"));
         }
         return wrapper;
     }
 
     @WebMethod(operationName = "updateShift")
     public ShiftResponseWrapper updateShift(@WebParam(name = "shift") ShiftDtoWs shiftDto) {
-        Shift shift = new Shift(shiftDto);
-        Response response = shiftService.updateShift(shift);
+        Response response = shiftService.updateShift(shiftDto);
         ShiftResponseWrapper wrapper = new ShiftResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setShift(new ShiftDtoWs((Shift) response.getResult("Shift")));
+            wrapper.setShift((ShiftDtoWs) response.getResult("Shift"));
         }
         return wrapper;
     }
@@ -51,7 +48,7 @@ public class ShiftWS {
         Response response = shiftService.findShiftById(id);
         ShiftResponseWrapper wrapper = new ShiftResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            wrapper.setShift(new ShiftDtoWs((Shift) response.getResult("Shift")));
+            wrapper.setShift((ShiftDtoWs) response.getResult("Shift"));
         }
         return wrapper;
     }
@@ -74,10 +71,14 @@ public class ShiftWS {
         Response response = shiftService.findAllShifts();
         ShiftResponseWrapper wrapper = new ShiftResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
-            List<Shift> shifts = (List<Shift>) response.getResult("Shifts");
-            if (shifts != null) {
-                wrapper.setShifts(shifts.stream().map(ShiftDtoWs::new).collect(Collectors.toList()));
+            List shiftResultList = (List) response.getResult("Shifts");
+            List<ShiftDtoWs> shifts = new ArrayList<>();
+            if (shiftResultList != null) {
+                for (Object obj : shiftResultList) {
+                    shifts.add((ShiftDtoWs) obj);
+                }
             }
+            wrapper.setShifts(shifts);
         }
         return wrapper;
     }
