@@ -22,7 +22,8 @@ import java.util.Objects;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Shift.findAll", query = "SELECT s FROM Shift s"),
-    @NamedQuery(name = "Shift.findById", query = "SELECT s FROM Shift s WHERE s.id = :id")
+    @NamedQuery(name = "Shift.findById", query = "SELECT s FROM Shift s WHERE s.id = :id"),
+    @NamedQuery(name = "Shift.findByEmployee", query = "SELECT s FROM Shift s WHERE s.employee = :employee"),
 })
 public class Shift implements Serializable {
 
