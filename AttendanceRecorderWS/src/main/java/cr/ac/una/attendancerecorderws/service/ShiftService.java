@@ -11,6 +11,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -119,4 +120,25 @@ public class ShiftService {
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar los turnos.", "findAllShifts " + ex.getMessage());
         }
     }
+    
+    public Response searchShifts(Long employeeId, String consistency, LocalDateTime startDate, LocalDateTime endDate) {
+        try {
+            List<Shift> shifts = em.createNamedQuery("Shift.search", Shift.class)
+                    .setParameter("employeeId", employeeId)
+                    .setParameter("consistency", consistency)
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .getResultList();
+
+            List<ShiftDtoWs> shiftsDto = new ArrayList<>();
+            for (Shift shift : shifts) {
+                shiftsDto.add(new ShiftDtoWs(shift));
+            }
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Shifts", shiftsDto);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Error consultando los turnos filtrados.", ex);
+            return new Response(false, ResponseCode.INTERNAL_ERROR, "Error consultando los turnos filtrados.", "search " + ex.getMessage());
+        }
+    }
+    
 }

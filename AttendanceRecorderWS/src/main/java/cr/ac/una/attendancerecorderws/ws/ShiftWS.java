@@ -9,6 +9,7 @@ import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,4 +85,23 @@ public class ShiftWS {
         }
         return wrapper;
     }
+    
+    @WebMethod(operationName = "search")
+    public ShiftResponseWrapper findShiftsByFilters(
+            @WebParam(name = "employeeId") Long employeeId,
+            @WebParam(name = "consistency") String consistency,
+            @WebParam(name = "startDate") String startDate,
+            @WebParam(name = "endDate") String endDate) {
+
+        LocalDateTime start = (startDate != null && !startDate.isBlank()) ? LocalDateTime.parse(startDate) : null;
+        LocalDateTime end = (endDate != null && !endDate.isBlank()) ? LocalDateTime.parse(endDate) : null;
+
+        Response response = shiftService.searchShifts(employeeId, consistency, start, end);
+        ShiftResponseWrapper wrapper = new ShiftResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setShifts((List<ShiftDtoWs>) response.getResult("Shifts"));
+        }
+        return wrapper;
+    }
+    
 }

@@ -27,7 +27,17 @@ import java.util.Objects;
 @NamedQueries({
     @NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e"),
     @NamedQuery(name = "Employee.findById", query = "SELECT e FROM Employee e WHERE e.id = :id"),
-    @NamedQuery(name = "Employee.findByFol", query = "SELECT e FROM Employee e WHERE e.fol = :fol")
+    @NamedQuery(name = "Employee.findByFol", query = "SELECT e FROM Employee e WHERE e.fol = :fol"),
+    @NamedQuery(name = "Employee.search", query = "SELECT e FROM Employee e WHERE "
+            + "UPPER(e.idCard) LIKE :idCard AND "
+            + "UPPER(e.fol) LIKE :fol AND "
+            + "UPPER(e.name) LIKE :name AND "
+            + "(UPPER(e.firstSurname) LIKE :firstSurname AND "
+            + "UPPER(e.secondSurname) LIKE :secondSurname) AND "
+            + "(:hourlyWage IS NULL OR e.hourlyWage = :hourlyWage) AND "
+            + "(:administrator IS NULL OR e.administrator = :administrator) AND "
+            + "(:active IS NULL OR e.active = :active) AND "
+            + "(:birthDate IS NULL OR e.birthDate = :birthDate)")
 })
 public class Employee implements Serializable {
 

@@ -8,6 +8,7 @@ import jakarta.ejb.EJB;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,4 +90,34 @@ public class EmployeeWS {
         }
         return wrapper;
     }
+    
+    @WebMethod(operationName = "searchEmployees")
+    public EmployeeResponseWrapper searchEmployees(
+            @WebParam(name = "idCard") String idCard,
+            @WebParam(name = "fol") String fol,
+            @WebParam(name = "name") String name,
+            @WebParam(name = "firstSurname") String firstSurname,
+            @WebParam(name = "secondSurname") String secondSurname,
+            @WebParam(name = "hourlyWage") Double hourlyWage,
+            @WebParam(name = "administrator") String administrator,
+            @WebParam(name = "active") String active,
+            @WebParam(name = "birthDate") String birthDate) {
+
+        LocalDate parsedDate = (birthDate != null && !birthDate.isBlank()) ? LocalDate.parse(birthDate) : null;
+        Response response = employeeService.searchEmployees(idCard, fol, name, firstSurname, secondSurname, hourlyWage, administrator, active, parsedDate);
+
+        EmployeeResponseWrapper wrapper = new EmployeeResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            List employeeResultList = (List) response.getResult("Employees");
+            List<EmployeeDtoWs> employees = new ArrayList<>();
+            if (employeeResultList != null) {
+                for (Object obj : employeeResultList) {
+                    employees.add((EmployeeDtoWs) obj);
+                }
+            }
+            wrapper.setEmployees(employees);
+        }
+        return wrapper;
+    }
+    
 }

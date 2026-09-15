@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -146,4 +147,31 @@ public class EmployeeService {
             return null;
         }
     }
+    
+    public Response searchEmployees(String idCard, String fol, String name, String firstSurname, String secondSurname,
+        Double hourlyWage, String administrator, String active, LocalDate birthDate) {
+        try {
+            List<Employee> employees = em.createNamedQuery("Employee.search", Employee.class)
+                    .setParameter("idCard", "%" + (idCard == null ? "" : idCard.toUpperCase()) + "%")
+                    .setParameter("fol", "%" + (fol == null ? "" : fol.toUpperCase()) + "%")
+                    .setParameter("name", "%" + (name == null ? "" : name.toUpperCase()) + "%")
+                    .setParameter("firstSurname", "%" + (firstSurname == null ? "" : firstSurname.toUpperCase()) + "%")
+                    .setParameter("secondSurname", "%" + (secondSurname == null ? "" : secondSurname.toUpperCase()) + "%")
+                    .setParameter("hourlyWage", hourlyWage)
+                    .setParameter("administrator", administrator)
+                    .setParameter("active", active)
+                    .setParameter("birthDate", birthDate)
+                    .getResultList();
+
+            List<EmployeeDtoWs> employeesDto = new ArrayList<>();
+            for (Employee employee : employees) {
+                employeesDto.add(new EmployeeDtoWs(employee));
+            }
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Employees", employeesDto);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Ocurrió un error al buscar los empleados.", ex);
+            return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al buscar los empleados.", "searchEmployees " + ex.getMessage());
+        }
+    }
+    
 }

@@ -24,7 +24,20 @@ import java.util.Objects;
     @NamedQuery(name = "Shift.findAll", query = "SELECT s FROM Shift s"),
     @NamedQuery(name = "Shift.findById", query = "SELECT s FROM Shift s WHERE s.id = :id"),
     @NamedQuery(name = "Shift.findByEmployee", query = "SELECT s FROM Shift s WHERE s.employee = :employee"),
-})
+    @NamedQuery(name = "Shift.search", query = "SELECT s FROM Shift s "
+        + "LEFT JOIN s.entryRecord entryRecord "
+        + "LEFT JOIN s.exitRecord exitRecord "
+        + "WHERE (:employeeId IS NULL OR s.employee.id = :employeeId) "
+        + "AND (:consistency = 'ALL' "
+        + "OR (:consistency = 'CONSISTENT' AND entryRecord IS NOT NULL AND exitRecord IS NOT NULL) "
+        + "OR (:consistency = 'INCONSISTENT' AND (entryRecord IS NULL OR exitRecord IS NULL))) "
+        + "AND (:startDate IS NULL "
+        + "OR (entryRecord IS NOT NULL AND entryRecord.timestamp >= :startDate) "
+        + "OR (exitRecord IS NOT NULL AND exitRecord.timestamp >= :startDate)) "
+        + "AND (:endDate IS NULL "
+        + "OR (entryRecord IS NOT NULL AND entryRecord.timestamp <= :endDate) "
+        + "OR (exitRecord IS NOT NULL AND exitRecord.timestamp <= :endDate))")
+    })
 public class Shift implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,7 +67,7 @@ public class Shift implements Serializable {
     private TimeRecord exitRecord;
     
     @JoinColumn(name = "SHIFT_ENTRY_TIME_RECORD", referencedColumnName = "TIME_RECORD_ID")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private TimeRecord entryRecord;
 
     public Shift() {
@@ -76,9 +89,11 @@ public class Shift implements Serializable {
         if (dto.getEntryRecord() != null) {
             this.entryRecord = new TimeRecord(dto.getEntryRecord().getId());
         }
+        else this.entryRecord = null;
         if (dto.getExitRecord() != null) {
             this.exitRecord = new TimeRecord(dto.getExitRecord().getId());
         }
+        else this.exitRecord = null;
         this.version = dto.getVersion();
     }
 
