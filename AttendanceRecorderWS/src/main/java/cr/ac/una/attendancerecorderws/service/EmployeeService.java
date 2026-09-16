@@ -125,9 +125,9 @@ public class EmployeeService {
                 return new Response(false, ResponseCode.ACCESS_ERROR, "Credenciales inválidas.", "authenticate employee not found or password null");
             }
             boolean passwordMatches = password.equals(employee.getPassword());
-            boolean isActive = "true".equals(employee.getActive());
-            boolean isAdministrator = "true".equals(employee.getAdministrator());
-            
+            boolean isActive = "T".equals(employee.getActive());
+            boolean isAdministrator = "T".equals(employee.getAdministrator());
+
             if (passwordMatches && isActive && isAdministrator) {
                 return new Response(true, ResponseCode.SUCCESS, "", "", "Employee", new EmployeeDtoWs(employee));
             }
@@ -147,9 +147,9 @@ public class EmployeeService {
             return null;
         }
     }
-    
+
     public Response searchEmployees(String idCard, String fol, String name, String firstSurname, String secondSurname,
-        Double hourlyWage, String administrator, String active, LocalDate birthDate) {
+            Double hourlyWage, String administrator, String active, LocalDate birthDate) {
         try {
             List<Employee> employees = em.createNamedQuery("Employee.search", Employee.class)
                     .setParameter("idCard", "%" + (idCard == null ? "" : idCard.toUpperCase()) + "%")
@@ -173,5 +173,5 @@ public class EmployeeService {
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al buscar los empleados.", "searchEmployees " + ex.getMessage());
         }
     }
-    
+
 }
