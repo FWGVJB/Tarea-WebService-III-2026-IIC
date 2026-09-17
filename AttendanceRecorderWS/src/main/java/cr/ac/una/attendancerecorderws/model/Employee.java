@@ -99,9 +99,6 @@ public class Employee implements Serializable {
     private Long version;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
-    private List<ShiftReport> shiftReports;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private List<Shift> shifts;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
@@ -236,15 +233,6 @@ public class Employee implements Serializable {
 
     public void setVersion(Long version) {
         this.version = version;
-    }
-
-    @XmlTransient
-    public List<ShiftReport> getShiftReports() {
-        return shiftReports;
-    }
-
-    public void setShiftReports(List<ShiftReport> shiftReports) {
-        this.shiftReports = shiftReports;
     }
 
     @XmlTransient

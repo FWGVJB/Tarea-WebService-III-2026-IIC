@@ -40,8 +40,16 @@ public class PayrollDetail implements Serializable {
     private Double hourlyWage;
 
     @Basic(optional = false)
-    @Column(name = "PAYROLL_DETAIL_WORKED_HOURS")
-    private Double workedHours;
+    @Column(name = "PAYROLL_DETAIL_ORDINARY_HOURS")
+    private Double ordinaryHours;
+    
+    @Basic(optional = false)
+    @Column(name = "PAYROLL_DETAIL_EXTRA_HOURS")
+    private Double extraHours;
+    
+    @Basic(optional = false)
+    @Column(name = "PAYROLL_DETAIL_DOUBLE_HOURS")
+    private Double doubleHours;
 
     @Basic(optional = false)
     @Column(name = "PAYROLL_DETAIL_MONTHLY_SALARY")
@@ -77,7 +85,9 @@ public class PayrollDetail implements Serializable {
             this.employee = new Employee(dto.getEmployee().getId());
         }
         this.hourlyWage = dto.getHourlyWage();
-        this.workedHours = dto.getWorkedHours();
+        this.ordinaryHours = dto.getOrdinaryHours();
+        this.extraHours = dto.getExtraHours();
+        this.doubleHours = dto.getDoubleHours();
         this.monthlySalary = dto.getMonthlySalary();
         this.version = dto.getVersion();
     }
@@ -97,15 +107,31 @@ public class PayrollDetail implements Serializable {
     public void setHourlyWage(Double hourlyWage) {
         this.hourlyWage = hourlyWage;
     }
-
-    public Double getWorkedHours() {
-        return workedHours;
+    
+    public Double getOrdinaryHours() {
+        return ordinaryHours;
     }
 
-    public void setWorkedHours(Double workedHours) {
-        this.workedHours = workedHours;
+    public void setOrdinaryHours(Double ordinaryHours) {
+        this.ordinaryHours = ordinaryHours;
+    }
+    
+    public Double getExtraHours() {
+        return extraHours;
     }
 
+    public void setExtraHours(Double extraHours) {
+        this.extraHours = extraHours;
+    }
+    
+    public Double getDoubleHours() {
+        return doubleHours;
+    }
+
+    public void setDoubleHours(Double doubleHours) {
+        this.doubleHours = doubleHours;
+    }
+    
     public Double getMonthlySalary() {
         return monthlySalary;
     }

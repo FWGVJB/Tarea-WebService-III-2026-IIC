@@ -6,12 +6,16 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TimeRecordDtoWs implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private Long id;
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
@@ -71,6 +75,14 @@ public class TimeRecordDtoWs implements Serializable {
 
     public void setModified(Boolean modified) {
         this.modified = modified;
+    }
+    
+    public String getStringLocalDate() {
+        return timestamp != null ? timestamp.toLocalDate().format(DATE_FORMATTER) : null;
+    }
+
+    public String getStringLocalTime() {
+        return timestamp != null ? timestamp.toLocalTime().format(TIME_FORMATTER) : null;
     }
 
     @Override

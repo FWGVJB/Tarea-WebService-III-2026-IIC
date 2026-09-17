@@ -1,12 +1,14 @@
 package cr.ac.una.attendancerecorderws.service;
 
 import cr.ac.una.attendancerecorderws.model.EmployeeDtoWs;
+import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
 import cr.ac.una.attendancerecorderws.util.JasperGenerator;
 import cr.ac.una.attendancerecorderws.util.Response;
 import cr.ac.una.attendancerecorderws.util.ResponseCode;
 import jakarta.ejb.EJB;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,8 +21,8 @@ public class JasperService {
     
     private static final Logger LOG = Logger.getLogger(JasperService.class.getName());
 
-    @EJB
-    private EmployeeService employeeService;
+    @EJB private EmployeeService employeeService;
+    @EJB private ShiftService shiftService;
     
     public Response generateEmployeeInformationReport(List<Long> idList) {
         try {
@@ -40,6 +42,29 @@ public class JasperService {
         } catch (JRException ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al generar el reporte de empleados.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al generar el reporte de empleados.", "generateEmployeeInformationReport " + ex.getMessage());
+        }
+    }
+
+    public Response generateShiftReport(LocalDate startDate, LocalDate endDate, List<Long> idList, int timeRecordsAmount, int employeesAmount, double totalHours) {
+        try {
+            List<ShiftDtoWs> shifts = new ArrayList<>();
+            for (Long id : idList) {
+                Response shiftResponse = shiftService.findShiftById(id);
+                if (Boolean.TRUE.equals(shiftResponse.getStatus())) {
+                    ShiftDtoWs shift = (ShiftDtoWs) shiftResponse.getResult("Shift");
+                    shifts.add(shift);
+                }
+            }
+            if (shifts.isEmpty()) {
+                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontraron turnos con los IDs ingresados.", "generateShiftReport no shifts found");
+            }
+            byte[] pdfBytes = JasperGenerator.generateShiftReport(shifts, startDate, endDate, timeRecordsAmount, employeesAmount, totalHours);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "PdfReport", pdfBytes);
+        } catch (JRException ex) {
+            LOG.log(Level.SEVERE, "Ocurrió un error al generar el reporte de marcas.", ex);
+            return new Response(false, ResponseCode.INTERNAL_ERROR,
+                    "Ocurrió un error al generar el reporte de marcas.",
+                    "generateShiftReport " + ex.getMessage());
         }
     }
     

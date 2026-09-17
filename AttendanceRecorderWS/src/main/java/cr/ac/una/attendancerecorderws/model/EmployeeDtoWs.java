@@ -167,6 +167,10 @@ public class EmployeeDtoWs implements Serializable {
     public void setModified(Boolean modified) {
         this.modified = modified;
     }
+    
+    public String getFullName(){
+        return name + " " + firstSurname + " " + (secondSurname != null ? secondSurname : "");
+    }
 
     @Override
     public int hashCode() {

@@ -29,7 +29,7 @@ public class PayrollService {
     private static final Logger LOG = Logger.getLogger(PayrollService.class.getName());
 
     private static final double MAX_DAY_ORDINARY_HOURS = 8.0, MAX_NIGHT_ORDINARY_HOURS = 6.0;
-    private static final double NIGHT_MULTIPLIER = 1.3333, EXTRA_MULTIPLIER = 1.5;
+    private static final double NIGHT_MULTIPLIER = 4.0 / 3.0, EXTRA_MULTIPLIER = 1.5, DOUBLE_MULTIPLIER = 2.0;
     private static final LocalTime DAY_SHIFT_START = LocalTime.of(2, 0), DAY_SHIFT_END = LocalTime.of(22, 0);
 
     @PersistenceContext(unitName = "AttendanceRecorderWsPU")
@@ -60,7 +60,6 @@ public class PayrollService {
     public Response generatePayroll(Integer month, Integer year) {
         try {
             List<Employee> employees = em.createNamedQuery("Employee.findAll", Employee.class).getResultList();
-
             if (employees.isEmpty()) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No hay empleados para generar la planilla.", "");
             }
@@ -72,7 +71,6 @@ public class PayrollService {
 
             Payroll payroll;
             boolean isNew = false;
-
             if (!existingPayrolls.isEmpty()) {
                 payroll = existingPayrolls.get(0);
                 if (payroll.getDetails() != null) {
@@ -91,57 +89,65 @@ public class PayrollService {
             double totalPaymentSum = 0.0;
             List<PayrollDetail> details = new ArrayList<>();
 
-            for (Employee emp : employees) {
+            for (Employee employee : employees) {
                 PayrollDetail detail = new PayrollDetail();
-                detail.setEmployee(emp);
+                detail.setEmployee(employee);
                 detail.setPayroll(payroll);
 
-                double hourlyWage = emp.getHourlyWage() != null ? emp.getHourlyWage() : 0.0;
+                double hourlyWage = employee.getHourlyWage() != null ? employee.getHourlyWage() : 0.0;
                 detail.setHourlyWage(hourlyWage);
 
-                double workedHours = 0.0;
-                double monthlySalary = 0.0;
+                double ordinaryHours = 0.0;
+                double extraHours = 0.0;
+                double doubleHours = 0.0;
 
-                if (emp.getShifts() != null) {
-                    for (Shift shift : emp.getShifts()) {
+                if (employee.getShifts() != null) {
+                    for (Shift shift : employee.getShifts()) {
                         if (shift.getEntryRecord() != null && shift.getExitRecord() != null) {
                             LocalDateTime entry = shift.getEntryRecord().getTimestamp();
                             LocalDateTime exit = shift.getExitRecord().getTimestamp();
 
                             if (entry.getMonthValue() == month && entry.getYear() == year) {
-                                boolean isNightShift = isNightShift(entry, exit);
                                 double shiftHours = getHoursInPeriod(entry, exit);
-                                double sundayHours = getSundayHours(entry, exit);
-
-                                double ordinaryHours, extraHours, pay;
-
-                                if (isNightShift) {
-                                    ordinaryHours = Math.min(shiftHours, MAX_NIGHT_ORDINARY_HOURS);
-                                    extraHours = Math.max(0, shiftHours - MAX_NIGHT_ORDINARY_HOURS);
-                                    pay = (ordinaryHours * hourlyWage * NIGHT_MULTIPLIER) + (extraHours * hourlyWage * NIGHT_MULTIPLIER * EXTRA_MULTIPLIER);
-                                } else {
-                                    ordinaryHours = Math.min(shiftHours, MAX_DAY_ORDINARY_HOURS);
-                                    extraHours = Math.max(0, shiftHours - MAX_DAY_ORDINARY_HOURS);
-                                    pay = (ordinaryHours * hourlyWage) + (extraHours * hourlyWage * EXTRA_MULTIPLIER);
+                                if (shiftHours <= 0) {
+                                    continue;
                                 }
 
+                                boolean isNightShift = isNightShift(entry, exit);
+                                double maxOrdinary = isNightShift ? MAX_NIGHT_ORDINARY_HOURS : MAX_DAY_ORDINARY_HOURS;
+                                double nightMultiplier = isNightShift ? NIGHT_MULTIPLIER : 1.0;
+
+                                double ordinary = Math.min(shiftHours, maxOrdinary) * nightMultiplier;
+                                double extra = Math.max(0.0, shiftHours - maxOrdinary) * nightMultiplier * EXTRA_MULTIPLIER;
+
+                                double sundayHours = getSundayHours(entry, exit);
                                 if (sundayHours > 0 && shiftHours > 0) {
                                     double sundayFraction = sundayHours / shiftHours;
-                                    pay += pay * sundayFraction;
+                                    doubleHours += (ordinary + extra) * sundayFraction;
+                                    ordinaryHours += ordinary * (1.0 - sundayFraction);
+                                    extraHours += extra * (1.0 - sundayFraction);
+                                } else {
+                                    ordinaryHours += ordinary;
+                                    extraHours += extra;
                                 }
-
-                                workedHours += shiftHours;
-                                monthlySalary += pay;
                             }
                         }
                     }
                 }
 
-                detail.setWorkedHours(workedHours);
+                ordinaryHours = roundHours(ordinaryHours);
+                extraHours = roundHours(extraHours);
+                doubleHours = roundHours(doubleHours);
+
+                detail.setOrdinaryHours(ordinaryHours);
+                detail.setExtraHours(extraHours);
+                detail.setDoubleHours(doubleHours);
+
+                double monthlySalary = (ordinaryHours + extraHours + doubleHours * 2.0) * hourlyWage;
                 detail.setMonthlySalary(monthlySalary);
 
                 details.add(detail);
-                totalPaymentSum += detail.getMonthlySalary();
+                totalPaymentSum += monthlySalary;
             }
 
             payroll.setDetails(details);
@@ -300,4 +306,9 @@ public class PayrollService {
         boolean endsAfterDayShift = exit.toLocalTime().isAfter(DAY_SHIFT_END);
         return startsBeforeDayShift || endsAfterDayShift;
     }
+    
+    private double roundHours(double hours) {
+        return Math.round(hours * 10000.0) / 10000.0;
+    }
+    
 }

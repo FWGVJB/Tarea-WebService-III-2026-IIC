@@ -58,10 +58,6 @@ public class Shift implements Serializable {
     @ManyToOne(optional = false)
     private Employee employee;
     
-    @JoinColumn(name = "SHIFT_SHIFT_REPORT", referencedColumnName = "SHIFT_REPORT_ID")
-    @ManyToOne
-    private ShiftReport shiftReport;
-    
     @JoinColumn(name = "SHIFT_EXIT_TIME_RECORD", referencedColumnName = "TIME_RECORD_ID")
     @ManyToOne
     private TimeRecord exitRecord;
@@ -119,14 +115,6 @@ public class Shift implements Serializable {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
-    }
-
-    public ShiftReport getShiftReport() {
-        return shiftReport;
-    }
-
-    public void setShiftReport(ShiftReport shiftReport) {
-        this.shiftReport = shiftReport;
     }
 
     public TimeRecord getExitRecord() {

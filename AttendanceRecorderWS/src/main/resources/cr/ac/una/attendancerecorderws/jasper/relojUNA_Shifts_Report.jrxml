@@ -1,0 +1,178 @@
+<!-- Created with Jaspersoft Studio version 7.0.8.final using JasperReports Library version 7.0.8-6f896111  -->
+<jasperReport name="relojUNA_Shift_Report" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7d3f9a10-1c2b-4a5e-9f60-1234567890ab">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="WINDOW_LOGO" class="java.io.InputStream"/>
+	<parameter name="START_DATE" class="java.util.Date"/>
+	<parameter name="TIME_RECORDS_AMOUNT" class="java.lang.Double"/>
+	<parameter name="EMPLOYEES_AMOUNT" class="java.lang.Double"/>
+	<parameter name="WORKED_HOURS" class="java.lang.Double"/>
+	<parameter name="END_DATE" class="java.util.Date"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="entryRecord.stringLocalDate" class="java.lang.String"/>
+	<field name="exitRecord.stringLocalDate" class="java.lang.String"/>
+	<field name="hoursInPeriod" class="java.lang.Double"/>
+	<field name="employee.fol" class="java.lang.String"/>
+	<field name="employee.fullName" class="java.lang.String"/>
+	<field name="entryRecord.stringLocalTime" class="java.lang.String"/>
+	<field name="exitRecord.stringLocalTime" class="java.lang.String"/>
+	<background splitType="Stretch"/>
+	<title height="111" splitType="Stretch">
+		<element kind="image" uuid="5140b320-5914-4fff-98b6-94af48b9c5c5" x="10" y="10" width="50" height="50">
+			<expression><![CDATA[$P{WINDOW_LOGO}]]></expression>
+		</element>
+		<element kind="textField" uuid="7f96a5e2-bc63-4cc6-9b74-eddf6e38e4de" x="0" y="80" width="555" height="20" fontName="Serif" fontSize="14.0" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Fecha de generación: " + (new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(new java.util.Date()))]]></expression>
+		</element>
+		<element kind="staticText" uuid="61ac5dc8-714a-4c88-b7be-7336a6528fc7" x="80" y="40" width="475" height="20" fontName="Serif" fontSize="15.0" hTextAlign="Left" vTextAlign="Bottom">
+			<text><![CDATA[REPORTE DE MARCAS]]></text>
+		</element>
+		<element kind="staticText" uuid="c565927b-2ee4-445d-9317-497f8d59454e" x="80" y="10" width="475" height="30" fontName="Serif" fontSize="22.0" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[HYPERBOREA, S.A.]]></text>
+		</element>
+		<element kind="line" uuid="55d12c11-07f4-4faa-a83d-248936e3a3c5" x="0" y="70" width="555" height="1" forecolor="#163A4B"/>
+	</title>
+	<pageHeader height="138" splitType="Stretch">
+		<element kind="textField" uuid="e5f6a7b8-c9d0-4123-def0-123456789012" x="0" y="0" width="555" height="20" fontName="Serif" fontSize="14.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Desde: " + ($P{START_DATE} != null ? new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format($P{START_DATE}) : "Todos los tiempos")]]></expression>
+		</element>
+		<element kind="staticText" uuid="a7b8c9d0-e1f2-4345-f012-345678901234" x="0" y="68" width="555" height="30" forecolor="#DFF7FC" backcolor="#163A4B" mode="Opaque" fontName="Serif" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[MARCAS DEL PERIODO]]></text>
+		</element>
+		<element kind="staticText" uuid="b8c9d0e1-f2a3-4456-0123-456789012345" x="200" y="98" width="140" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="1" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Entrada]]></text>
+		</element>
+		<element kind="staticText" uuid="c9d0e1f2-a3b4-4567-1234-567890123456" x="340" y="98" width="140" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Salida]]></text>
+		</element>
+		<element kind="staticText" uuid="e1f2a3b4-c5d6-4789-3456-789012345678" x="479" y="98" width="76" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Horas]]></text>
+		</element>
+		<element kind="line" uuid="6948de68-18d9-463f-bb90-9639eaedaf30" x="0" y="59" width="555" height="1" forecolor="#163A4B"/>
+		<element kind="staticText" uuid="b42c855b-f291-41d2-8dbe-4778924f6bc2" x="0" y="98" width="200" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="1" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Empleado]]></text>
+		</element>
+		<element kind="staticText" uuid="fa3e0086-77b4-4120-a398-1f6122ca8869" x="340" y="118" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Fecha]]></text>
+		</element>
+		<element kind="staticText" uuid="7d88f330-cffe-4a4a-af1a-3810d94a8d02" x="410" y="118" width="69" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Hora]]></text>
+		</element>
+		<element kind="staticText" uuid="68ec3637-d3d2-413a-811e-c85838d6afa2" x="200" y="118" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Fecha]]></text>
+		</element>
+		<element kind="staticText" uuid="215914d8-fd27-4f1a-a74d-56e427d0efc4" x="270" y="118" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Hora]]></text>
+		</element>
+		<element kind="staticText" uuid="86a02103-a08c-47d0-8e82-2e648e70a1b4" x="0" y="118" width="50" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Folio]]></text>
+		</element>
+		<element kind="staticText" uuid="ca4d394f-a6fd-48cd-921d-5eefae2d6a46" x="50" y="118" width="150" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Nombre completo]]></text>
+		</element>
+		<element kind="textField" uuid="1ee268ec-9712-4e80-a30d-3539a0161f43" x="0" y="30" width="555" height="20" fontName="Serif" fontSize="14.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Hasta: " + ($P{END_DATE} != null ? new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format($P{END_DATE}) : "Todos los tiempos")]]></expression>
+		</element>
+	</pageHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="textField" uuid="32c4d5e6-f7a8-4192-ab1c-2e3f4a5b6c7d" x="410" y="0" width="69" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{exitRecord.stringLocalTime}]]></expression>
+			</element>
+			<element kind="textField" uuid="43d5e6f7-a8b9-42a3-bc2d-3f4a5b6c7d8e" x="479" y="0" width="76" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{hoursInPeriod} != -1 ? $F{hoursInPeriod} : "Inconsistente"]]></expression>
+			</element>
+			<element kind="textField" uuid="14456368-4ef1-47bd-a2ca-568fd30d8753" x="340" y="0" width="70" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{exitRecord.stringLocalDate}]]></expression>
+			</element>
+			<element kind="textField" uuid="9880b748-bd18-48d1-b2bd-afbcfbd2f89e" x="270" y="0" width="70" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{entryRecord.stringLocalTime}]]></expression>
+			</element>
+			<element kind="textField" uuid="74327594-3b6b-4e25-b6d2-f4e3fee883f8" x="200" y="0" width="70" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{entryRecord.stringLocalDate}]]></expression>
+			</element>
+			<element kind="textField" uuid="ba18ccda-fb53-4f18-a273-63f2cae71438" x="0" y="0" width="50" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{employee.fol}]]></expression>
+			</element>
+			<element kind="textField" uuid="bb05c3d4-2f0a-4c7e-badd-bed4fe98fd18" x="50" y="0" width="150" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{employee.fullName}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="30">
+		<element kind="line" uuid="a5b6c7d8-e9f0-4123-7890-123456789012" x="0" y="10" width="555" height="1"/>
+		<element kind="textField" uuid="b6c7d8e9-f0a1-4234-8901-234567890123" x="1" y="11" width="554" height="18" fontName="Serif" fontSize="12.0" linkType="None" linkTarget="Self" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+	<summary height="139" splitType="Stretch">
+		<element kind="line" uuid="f8a9b0c1-d2e3-4456-0123-456789012345" x="0" y="-1" width="555" height="1" forecolor="#163A4B"/>
+		<element kind="staticText" uuid="a9b0c1d2-e3f4-4567-1234-567890123456" x="0" y="10" width="555" height="30" forecolor="#DFF7FC" backcolor="#163A4B" mode="Opaque" fontName="Serif" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+			<box padding="1"/>
+			<text><![CDATA[RESUMEN DE REPORTE]]></text>
+		</element>
+		<element kind="textField" uuid="b0c1d2e3-f4a5-4678-2345-678901234567" x="0" y="80" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Cantidad de marcas: " + $P{TIME_RECORDS_AMOUNT}]]></expression>
+		</element>
+		<element kind="textField" uuid="c1d2e3f4-a5b6-4789-3456-789012345678" x="0" y="50" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Empleados con marcas: " + $P{EMPLOYEES_AMOUNT}]]></expression>
+		</element>
+		<element kind="textField" uuid="d2e3f4a5-b6c7-4890-4567-890123456789" x="0" y="110" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Horas trabajadas: " + $P{WORKED_HOURS}]]></expression>
+		</element>
+	</summary>
+</jasperReport>

@@ -3,7 +3,6 @@ package cr.ac.una.attendancerecorderws.service;
 import cr.ac.una.attendancerecorderws.model.Employee;
 import cr.ac.una.attendancerecorderws.model.Shift;
 import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
-import cr.ac.una.attendancerecorderws.model.ShiftReport;
 import cr.ac.una.attendancerecorderws.util.Response;
 import cr.ac.una.attendancerecorderws.util.ResponseCode;
 import jakarta.ejb.LocalBean;
@@ -47,11 +46,7 @@ public class ShiftService {
             if (shift == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el turno a modificar.", "updateShift NoResultException");
             }
-
-            ShiftReport existingReport = shift.getShiftReport();
             shift.update(shiftDto);
-            shift.setShiftReport(existingReport);
-            
             shift = em.merge(shift);
             em.flush();
             return new Response(true, ResponseCode.SUCCESS, "", "", "Shift", new ShiftDtoWs(shift));

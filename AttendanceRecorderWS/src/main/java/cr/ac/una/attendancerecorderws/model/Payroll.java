@@ -137,6 +137,18 @@ public class Payroll implements Serializable {
     public void setDetails(List<PayrollDetail> details) {
         this.details = details;
     }
+    
+    public String getPeriod() {
+        String[] meses = {
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        };
+        int mesIndex = this.month - 1;
+        if (mesIndex < 0 || mesIndex > 11) {
+            return "";
+        }
+        return meses[mesIndex] + " del " + this.year;
+    }
 
     @Override
     public int hashCode() {
