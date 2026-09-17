@@ -106,6 +106,13 @@ public class PayrollDetailDtoWs implements Serializable {
     public void setModified(Boolean modified) {
         this.modified = modified;
     }
+    
+    public Double getTotalHours() {
+        double ordinary = ordinaryHours != null ? ordinaryHours : 0.0;
+        double extra = extraHours != null ? extraHours : 0.0;
+        double doubleH = doubleHours != null ? doubleHours : 0.0;
+        return ordinary + extra + doubleH;
+    }
 
     @Override
     public int hashCode() {

@@ -46,4 +46,14 @@ public class JasperWS {
         return wrapper;
     }
     
+    @WebMethod(operationName = "generatePayrollReport")
+    public JasperResponseWrapper generatePayrollReport(@WebParam(name = "id") Long id) {
+        Response response = reportService.generatePayrollReport(id);
+        JasperResponseWrapper wrapper = new JasperResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            wrapper.setPdfReport((byte[]) response.getResult("PdfReport"));
+        }
+        return wrapper;
+    }
+
 }

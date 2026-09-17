@@ -1,6 +1,7 @@
 package cr.ac.una.attendancerecorderws.service;
 
 import cr.ac.una.attendancerecorderws.model.EmployeeDtoWs;
+import cr.ac.una.attendancerecorderws.model.PayrollDtoWs;
 import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
 import cr.ac.una.attendancerecorderws.util.JasperGenerator;
 import cr.ac.una.attendancerecorderws.util.Response;
@@ -23,6 +24,7 @@ public class JasperService {
 
     @EJB private EmployeeService employeeService;
     @EJB private ShiftService shiftService;
+    @EJB private PayrollService payrollService;
     
     public Response generateEmployeeInformationReport(List<Long> idList) {
         try {
@@ -37,7 +39,7 @@ public class JasperService {
             if (employees.isEmpty()) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontraron empleados con los IDs ingresados.", "generateEmployeeInformationReport no employees found");
             }
-            byte[] pdfBytes = JasperGenerator.generateEmployeeInformationReport(employees);
+            byte[] pdfBytes = JasperGenerator.getInstance().generateEmployeeInformationReport(employees);
             return new Response(true, ResponseCode.SUCCESS, "", "", "PdfReport", pdfBytes);
         } catch (JRException ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al generar el reporte de empleados.", ex);
@@ -58,13 +60,31 @@ public class JasperService {
             if (shifts.isEmpty()) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontraron turnos con los IDs ingresados.", "generateShiftReport no shifts found");
             }
-            byte[] pdfBytes = JasperGenerator.generateShiftReport(shifts, startDate, endDate, timeRecordsAmount, employeesAmount, totalHours);
+            byte[] pdfBytes = JasperGenerator.getInstance().generateShiftReport(shifts, startDate, endDate, timeRecordsAmount, employeesAmount, totalHours);
             return new Response(true, ResponseCode.SUCCESS, "", "", "PdfReport", pdfBytes);
         } catch (JRException ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al generar el reporte de marcas.", ex);
             return new Response(false, ResponseCode.INTERNAL_ERROR,
                     "Ocurrió un error al generar el reporte de marcas.",
                     "generateShiftReport " + ex.getMessage());
+        }
+    }
+    
+    public Response generatePayrollReport(Long payrollId) {
+        try {
+            Response payrollResponse = payrollService.findPayrollById(payrollId);
+            if (!Boolean.TRUE.equals(payrollResponse.getStatus())) {
+                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró la planilla con el ID ingresado.",
+                    "generatePayrollReport payroll not found");
+            }
+
+            PayrollDtoWs payroll = (PayrollDtoWs) payrollResponse.getResult("Payroll");
+            byte[] pdfBytes = JasperGenerator.getInstance().generatePayrollReport(payroll);
+            return new Response(true, ResponseCode.SUCCESS, "", "", "PdfReport", pdfBytes);
+        } catch (JRException ex) {
+            LOG.log(Level.SEVERE, "Ocurrió un error al generar el reporte de planilla.", ex);
+            return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al generar el reporte de planilla.",
+                "generatePayrollReport " + ex.getMessage());
         }
     }
     

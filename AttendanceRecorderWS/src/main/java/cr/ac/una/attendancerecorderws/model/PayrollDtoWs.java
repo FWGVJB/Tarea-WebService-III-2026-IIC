@@ -86,6 +86,18 @@ public class PayrollDtoWs implements Serializable {
     public void setModified(Boolean modified) {
         this.modified = modified;
     }
+    
+    public String getPeriod() {
+        String[] meses = {
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        };
+        int mesIndex = this.month - 1;
+        if (mesIndex < 0 || mesIndex > 11) {
+            return "";
+        }
+        return meses[mesIndex] + " del " + this.year;
+    }
 
     @Override
     public int hashCode() {
