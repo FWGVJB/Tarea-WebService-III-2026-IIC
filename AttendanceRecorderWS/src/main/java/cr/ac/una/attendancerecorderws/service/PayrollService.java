@@ -72,12 +72,13 @@ public class PayrollService {
             Payroll payroll;
             boolean isNew = false;
             if (!existingPayrolls.isEmpty()) {
-                payroll = existingPayrolls.get(0);
+                payroll = existingPayrolls.getFirst();
                 if (payroll.getDetails() != null) {
                     for (PayrollDetail oldDetail : payroll.getDetails()) {
                         em.remove(oldDetail);
                     }
                     payroll.getDetails().clear();
+                    em.flush();
                 }
             } else {
                 payroll = new Payroll();
