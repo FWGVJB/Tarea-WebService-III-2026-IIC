@@ -28,7 +28,7 @@ public final class JasperGenerator {
     private static final Logger LOG = Logger.getLogger(JasperGenerator.class.getName());
 
     private static final String CHECK_ICON_PATH = "/cr/ac/una/attendancerecorderws/resource/checkIcon.png";
-    private static final String WINDOW_LOGO_PATH = "/cr/ac/una/attendancerecorderws/resource/windowLogo.jpg";
+    private static final String WINDOW_LOGO_PATH = "/cr/ac/una/attendancerecorderws/resource/windowLogo.png";
     private static final String EMPLOYEE_INFORMATION_REPORT_PATH = "/cr/ac/una/attendancerecorderws/jasper/relojUNA_Employee_Information_Report.jrxml";
     private static final String SHIFT_REPORT_PATH = "/cr/ac/una/attendancerecorderws/jasper/relojUNA_Shifts_Report.jrxml";
     private static final String PAYROLL_REPORT_PATH = "/cr/ac/una/attendancerecorderws/jasper/relojUNA_Payroll_Report.jrxml";

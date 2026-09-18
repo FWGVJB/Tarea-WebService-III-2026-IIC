@@ -268,6 +268,20 @@ public class PayrollService {
             return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar las planillas.", "findAllPayrolls " + ex.getMessage());
         }
     }
+    
+    public Response findPayrollsByMonthAndYear(Integer month, Integer year) {
+        try {
+            List<Payroll> payrolls = em.createNamedQuery("Payroll.findByMonthAndYear", Payroll.class).setParameter("month", month).setParameter("year", year).getResultList();
+            List<PayrollDtoWs> payrollsDto = new ArrayList<>();
+            for (Payroll payroll : payrolls) {
+                payrollsDto.add(convertToDtoWithDetails(payroll));
+            }
+            return new Response(true, ResponseCode.SUCCESS, "", "", "Payrolls", payrollsDto);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Ocurrió un error al consultar las planillas por mes y año.", ex);
+            return new Response(false, ResponseCode.INTERNAL_ERROR, "Ocurrió un error al consultar las planillas por mes y año.", "findPayrollsByMonthAndYear " + ex.getMessage());
+        }
+    }
 
     private PayrollDtoWs convertToDtoWithDetails(Payroll payroll) {
         PayrollDtoWs dto = new PayrollDtoWs(payroll);

@@ -79,4 +79,26 @@ public class PayrollWS {
         }
         return wrapper;
     }
+    
+    @WebMethod(operationName = "findPayrollsByMonthAndYear")
+    public PayrollResponseWrapper findPayrollsByMonthAndYear(
+            @WebParam(name = "month") Integer month,
+            @WebParam(name = "year") Integer year) {
+
+        Response response = payrollService.findPayrollsByMonthAndYear(month, year);
+        PayrollResponseWrapper wrapper = new PayrollResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
+
+        if (Boolean.TRUE.equals(response.getStatus())) {
+            List payrollResultList = (List) response.getResult("Payrolls");
+            List<PayrollDtoWs> payrolls = new ArrayList<>();
+            if (payrollResultList != null) {
+                for (Object obj : payrollResultList) {
+                    payrolls.add((PayrollDtoWs) obj);
+                }
+            }
+            wrapper.setPayrolls(payrolls);
+        }
+        return wrapper;
+    }
+    
 }

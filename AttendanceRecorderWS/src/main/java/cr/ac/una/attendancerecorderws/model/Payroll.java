@@ -25,7 +25,8 @@ import java.util.Objects;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Payroll.findAll", query = "SELECT p FROM Payroll p"),
-    @NamedQuery(name = "Payroll.findById", query = "SELECT p FROM Payroll p WHERE p.id = :id")
+    @NamedQuery(name = "Payroll.findById", query = "SELECT p FROM Payroll p WHERE p.id = :id"),
+    @NamedQuery(name = "Payroll.findByMonthAndYear", query = "SELECT p FROM Payroll p WHERE (:month IS NULL OR p.month = :month) AND (:year IS NULL OR p.year = :year)")
 })
 public class Payroll implements Serializable {
 
