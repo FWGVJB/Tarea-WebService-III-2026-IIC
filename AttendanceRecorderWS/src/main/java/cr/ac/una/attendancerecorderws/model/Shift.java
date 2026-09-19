@@ -24,6 +24,7 @@ import java.util.Objects;
     @NamedQuery(name = "Shift.findAll", query = "SELECT s FROM Shift s"),
     @NamedQuery(name = "Shift.findById", query = "SELECT s FROM Shift s WHERE s.id = :id"),
     @NamedQuery(name = "Shift.findByEmployee", query = "SELECT s FROM Shift s WHERE s.employee = :employee"),
+    @NamedQuery(name = "Shift.countByEmployee", query = "SELECT COUNT(s) FROM Shift s WHERE s.employee.id = :employeeId"),
     @NamedQuery(name = "Shift.search", query = "SELECT s FROM Shift s "
         + "LEFT JOIN s.entryRecord entryRecord "
         + "LEFT JOIN s.exitRecord exitRecord "
