@@ -25,6 +25,7 @@ public class JasperService {
     @EJB private EmployeeService employeeService;
     @EJB private ShiftService shiftService;
     @EJB private PayrollService payrollService;
+    @EJB private JasperGenerator jasperGenerator;
     
     public Response generateEmployeeInformationReport(List<Long> idList) {
         try {
@@ -39,7 +40,7 @@ public class JasperService {
             if (employees.isEmpty()) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontraron empleados con los IDs ingresados.", "generateEmployeeInformationReport no employees found");
             }
-            byte[] pdfBytes = JasperGenerator.getInstance().generateEmployeeInformationReport(employees);
+            byte[] pdfBytes = jasperGenerator.generateEmployeeInformationReport(employees);
             return new Response(true, ResponseCode.SUCCESS, "", "", "PdfReport", pdfBytes);
         } catch (JRException ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al generar el reporte de empleados.", ex);
@@ -47,7 +48,7 @@ public class JasperService {
         }
     }
 
-    public Response generateShiftReport(LocalDate startDate, LocalDate endDate, List<Long> idList, int timeRecordsAmount, int employeesAmount, double totalHours) {
+    public Response generateShiftReport(LocalDate startDate, LocalDate endDate, List<Long> idList, int timeRecordsAmount, int employeesAmount, double totalHours, String types) {
         try {
             List<ShiftDtoWs> shifts = new ArrayList<>();
             for (Long id : idList) {
@@ -60,7 +61,7 @@ public class JasperService {
             if (shifts.isEmpty()) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontraron turnos con los IDs ingresados.", "generateShiftReport no shifts found");
             }
-            byte[] pdfBytes = JasperGenerator.getInstance().generateShiftReport(shifts, startDate, endDate, timeRecordsAmount, employeesAmount, totalHours);
+            byte[] pdfBytes = jasperGenerator.generateShiftReport(shifts, startDate, endDate, timeRecordsAmount, employeesAmount, totalHours, types);
             return new Response(true, ResponseCode.SUCCESS, "", "", "PdfReport", pdfBytes);
         } catch (JRException ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al generar el reporte de marcas.", ex);
@@ -79,7 +80,7 @@ public class JasperService {
             }
 
             PayrollDtoWs payroll = (PayrollDtoWs) payrollResponse.getResult("Payroll");
-            byte[] pdfBytes = JasperGenerator.getInstance().generatePayrollReport(payroll);
+            byte[] pdfBytes = jasperGenerator.generatePayrollReport(payroll);
             return new Response(true, ResponseCode.SUCCESS, "", "", "PdfReport", pdfBytes);
         } catch (JRException ex) {
             LOG.log(Level.SEVERE, "Ocurrió un error al generar el reporte de planilla.", ex);

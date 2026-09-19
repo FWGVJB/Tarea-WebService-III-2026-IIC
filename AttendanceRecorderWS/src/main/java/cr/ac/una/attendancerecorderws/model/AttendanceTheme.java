@@ -28,7 +28,7 @@ import java.util.Objects;
 @NamedQueries({
     @NamedQuery(name = "AttendanceTheme.findAll", query = "SELECT a FROM AttendanceTheme a"),
     @NamedQuery(name = "AttendanceTheme.findById", query = "SELECT a FROM AttendanceTheme a WHERE a.id = :id"),
-    @NamedQuery(name = "AttendanceTheme.findByDateRange",query = "SELECT a FROM AttendanceTheme a WHERE a.start <= :endDate AND a.end >= :startDate"),
+    @NamedQuery(name = "AttendanceTheme.findByDateRange",query = "SELECT a FROM AttendanceTheme a WHERE (:endDate IS NULL OR a.start <= :endDate) AND (:startDate IS NULL OR a.end >= :startDate)"),
     @NamedQuery(name = "AttendanceTheme.findByDate", query = "SELECT a FROM AttendanceTheme a WHERE a.start <= :date AND a.end >= :date")
 })
 public class AttendanceTheme implements Serializable {

@@ -3,16 +3,17 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="WINDOW_LOGO" class="java.io.InputStream"/>
 	<parameter name="START_DATE" class="java.util.Date"/>
-	<parameter name="TIME_RECORDS_AMOUNT" class="java.lang.Double"/>
-	<parameter name="EMPLOYEES_AMOUNT" class="java.lang.Double"/>
+	<parameter name="TIME_RECORDS_AMOUNT" class="java.lang.Integer"/>
+	<parameter name="EMPLOYEES_AMOUNT" class="java.lang.Integer"/>
 	<parameter name="WORKED_HOURS" class="java.lang.Double"/>
 	<parameter name="END_DATE" class="java.util.Date"/>
+	<parameter name="TYPES" class="java.lang.String"/>
 	<query language="sql"><![CDATA[]]></query>
 	<field name="entryRecord.stringLocalDate" class="java.lang.String"/>
 	<field name="exitRecord.stringLocalDate" class="java.lang.String"/>
 	<field name="hoursInPeriod" class="java.lang.Double"/>
 	<field name="employee.fol" class="java.lang.String"/>
-	<field name="employee.fullName" class="java.lang.String"/>
+	<field name="employee.idCard" class="java.lang.String"/>
 	<field name="entryRecord.stringLocalTime" class="java.lang.String"/>
 	<field name="exitRecord.stringLocalTime" class="java.lang.String"/>
 	<background splitType="Stretch"/>
@@ -31,80 +32,89 @@
 		</element>
 		<element kind="line" uuid="55d12c11-07f4-4faa-a83d-248936e3a3c5" x="0" y="70" width="555" height="1" forecolor="#163A4B"/>
 	</title>
-	<pageHeader height="138" splitType="Stretch">
+	<pageHeader height="170" splitType="Stretch">
 		<element kind="textField" uuid="e5f6a7b8-c9d0-4123-def0-123456789012" x="0" y="0" width="555" height="20" fontName="Serif" fontSize="14.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
 			<expression><![CDATA["Desde: " + ($P{START_DATE} != null ? new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format($P{START_DATE}) : "Todos los tiempos")]]></expression>
 		</element>
-		<element kind="staticText" uuid="a7b8c9d0-e1f2-4345-f012-345678901234" x="0" y="68" width="555" height="30" forecolor="#DFF7FC" backcolor="#163A4B" mode="Opaque" fontName="Serif" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="a7b8c9d0-e1f2-4345-f012-345678901234" x="0" y="100" width="555" height="30" forecolor="#DFF7FC" backcolor="#163A4B" mode="Opaque" fontName="Serif" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[MARCAS DEL PERIODO]]></text>
 		</element>
-		<element kind="staticText" uuid="b8c9d0e1-f2a3-4456-0123-456789012345" x="200" y="98" width="140" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="b8c9d0e1-f2a3-4456-0123-456789012345" x="200" y="130" width="140" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="1" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Entrada]]></text>
 		</element>
-		<element kind="staticText" uuid="c9d0e1f2-a3b4-4567-1234-567890123456" x="340" y="98" width="140" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="c9d0e1f2-a3b4-4567-1234-567890123456" x="340" y="130" width="140" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Salida]]></text>
 		</element>
-		<element kind="staticText" uuid="e1f2a3b4-c5d6-4789-3456-789012345678" x="479" y="98" width="76" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="e1f2a3b4-c5d6-4789-3456-789012345678" x="479" y="130" width="76" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<property name="com.jaspersoft.studio.unit.x" value="px"/>
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Horas]]></text>
 		</element>
-		<element kind="line" uuid="6948de68-18d9-463f-bb90-9639eaedaf30" x="0" y="59" width="555" height="1" forecolor="#163A4B"/>
-		<element kind="staticText" uuid="b42c855b-f291-41d2-8dbe-4778924f6bc2" x="0" y="98" width="200" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="line" uuid="6948de68-18d9-463f-bb90-9639eaedaf30" x="0" y="89" width="555" height="1" forecolor="#163A4B"/>
+		<element kind="staticText" uuid="b42c855b-f291-41d2-8dbe-4778924f6bc2" x="0" y="130" width="200" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="1" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Empleado]]></text>
 		</element>
-		<element kind="staticText" uuid="fa3e0086-77b4-4120-a398-1f6122ca8869" x="340" y="118" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="fa3e0086-77b4-4120-a398-1f6122ca8869" x="340" y="150" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Fecha]]></text>
 		</element>
-		<element kind="staticText" uuid="7d88f330-cffe-4a4a-af1a-3810d94a8d02" x="410" y="118" width="69" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="7d88f330-cffe-4a4a-af1a-3810d94a8d02" x="410" y="150" width="69" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Hora]]></text>
 		</element>
-		<element kind="staticText" uuid="68ec3637-d3d2-413a-811e-c85838d6afa2" x="200" y="118" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="68ec3637-d3d2-413a-811e-c85838d6afa2" x="200" y="150" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Fecha]]></text>
 		</element>
-		<element kind="staticText" uuid="215914d8-fd27-4f1a-a74d-56e427d0efc4" x="270" y="118" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="215914d8-fd27-4f1a-a74d-56e427d0efc4" x="270" y="150" width="70" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Hora]]></text>
 		</element>
-		<element kind="staticText" uuid="86a02103-a08c-47d0-8e82-2e648e70a1b4" x="0" y="118" width="50" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="86a02103-a08c-47d0-8e82-2e648e70a1b4" x="0" y="150" width="60" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
 			<text><![CDATA[Folio]]></text>
 		</element>
-		<element kind="staticText" uuid="ca4d394f-a6fd-48cd-921d-5eefae2d6a46" x="50" y="118" width="150" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="ca4d394f-a6fd-48cd-921d-5eefae2d6a46" x="60" y="150" width="140" height="20" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 				<pen lineWidth="0.5" lineColor="#163A4B"/>
 			</box>
-			<text><![CDATA[Nombre completo]]></text>
+			<text><![CDATA[Cédula]]></text>
 		</element>
 		<element kind="textField" uuid="1ee268ec-9712-4e80-a30d-3539a0161f43" x="0" y="30" width="555" height="20" fontName="Serif" fontSize="14.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
 			<expression><![CDATA["Hasta: " + ($P{END_DATE} != null ? new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format($P{END_DATE}) : "Todos los tiempos")]]></expression>
+		</element>
+		<element kind="textField" uuid="41600195-cfe0-4316-9954-034f991e6fdc" x="0" y="60" width="555" height="20" fontName="Serif" fontSize="14.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Mostrando " + ($P{TYPES} == null ||
+							$P{TYPES}.trim().isEmpty() ? "marcas"
+        						: $P{TYPES}.equals("Todos") ? "todas las marcas"
+            						: $P{TYPES}.equals("Consistentes") ? "marcas consistentes"
+                						: $P{TYPES}.equals("Inconsistentes") ? "marcas inconsistentes"
+                    						: "marcas sin tipo especificado"
+)]]></expression>
 		</element>
 	</pageHeader>
 	<detail>
@@ -113,7 +123,7 @@
 				<box padding="1">
 					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
 				</box>
-				<expression><![CDATA[$F{exitRecord.stringLocalTime}]]></expression>
+				<expression><![CDATA[$F{exitRecord.stringLocalTime} != null ? $F{exitRecord.stringLocalTime} : ""]]></expression>
 			</element>
 			<element kind="textField" uuid="43d5e6f7-a8b9-42a3-bc2d-3f4a5b6c7d8e" x="479" y="0" width="76" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 				<box padding="1">
@@ -125,31 +135,31 @@
 				<box padding="1">
 					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
 				</box>
-				<expression><![CDATA[$F{exitRecord.stringLocalDate}]]></expression>
+				<expression><![CDATA[$F{exitRecord.stringLocalDate} != null ? $F{exitRecord.stringLocalDate} : ""]]></expression>
 			</element>
 			<element kind="textField" uuid="9880b748-bd18-48d1-b2bd-afbcfbd2f89e" x="270" y="0" width="70" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 				<box padding="1">
 					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
 				</box>
-				<expression><![CDATA[$F{entryRecord.stringLocalTime}]]></expression>
+				<expression><![CDATA[$F{entryRecord.stringLocalTime} != null ? $F{entryRecord.stringLocalTime} : ""]]></expression>
 			</element>
 			<element kind="textField" uuid="74327594-3b6b-4e25-b6d2-f4e3fee883f8" x="200" y="0" width="70" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 				<box padding="1">
 					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
 				</box>
-				<expression><![CDATA[$F{entryRecord.stringLocalDate}]]></expression>
+				<expression><![CDATA[$F{entryRecord.stringLocalDate} != null ? $F{entryRecord.stringLocalDate} : ""]]></expression>
 			</element>
-			<element kind="textField" uuid="ba18ccda-fb53-4f18-a273-63f2cae71438" x="0" y="0" width="50" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+			<element kind="textField" uuid="ba18ccda-fb53-4f18-a273-63f2cae71438" x="0" y="0" width="60" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 				<box padding="1">
 					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
 				</box>
-				<expression><![CDATA[$F{employee.fol}]]></expression>
+				<expression><![CDATA[$F{employee.fol} != null ? $F{employee.fol} : ""]]></expression>
 			</element>
-			<element kind="textField" uuid="bb05c3d4-2f0a-4c7e-badd-bed4fe98fd18" x="50" y="0" width="150" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+			<element kind="textField" uuid="bb05c3d4-2f0a-4c7e-badd-bed4fe98fd18" x="60" y="0" width="140" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 				<box padding="1">
 					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
 				</box>
-				<expression><![CDATA[$F{employee.fullName}]]></expression>
+				<expression><![CDATA[$F{employee.idCard} != null ? $F{employee.idCard} : ""]]></expression>
 			</element>
 		</band>
 	</detail>
@@ -166,13 +176,13 @@
 			<text><![CDATA[RESUMEN DE REPORTE]]></text>
 		</element>
 		<element kind="textField" uuid="b0c1d2e3-f4a5-4678-2345-678901234567" x="0" y="80" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA["Cantidad de marcas: " + $P{TIME_RECORDS_AMOUNT}]]></expression>
+			<expression><![CDATA["Cantidad de marcas: " + ($P{TIME_RECORDS_AMOUNT} != null ? $P{TIME_RECORDS_AMOUNT} : 0)]]></expression>
 		</element>
 		<element kind="textField" uuid="c1d2e3f4-a5b6-4789-3456-789012345678" x="0" y="50" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA["Empleados con marcas: " + $P{EMPLOYEES_AMOUNT}]]></expression>
+			<expression><![CDATA["Empleados con marcas: " + ($P{EMPLOYEES_AMOUNT} != null ? $P{EMPLOYEES_AMOUNT} : 0)]]></expression>
 		</element>
 		<element kind="textField" uuid="d2e3f4a5-b6c7-4890-4567-890123456789" x="0" y="110" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA["Horas trabajadas: " + $P{WORKED_HOURS}]]></expression>
+			<expression><![CDATA["Horas trabajadas: " + ($P{WORKED_HOURS} != null ? $P{WORKED_HOURS} : 0)]]></expression>
 		</element>
 	</summary>
 </jasperReport>

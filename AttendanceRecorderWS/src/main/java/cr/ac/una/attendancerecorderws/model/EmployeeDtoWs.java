@@ -142,7 +142,7 @@ public class EmployeeDtoWs implements Serializable {
     }
     
     public byte[] getPrimitiveAvatar() {
-        if (this.avatar == null) return null;
+        if (this.avatar == null || this.avatar.length == 0) return null;
         byte[] result = new byte[this.avatar.length];
         for (int i = 0; i < this.avatar.length; i++) result[i] = this.avatar[i] != null ? this.avatar[i] : 0;
         return result;
