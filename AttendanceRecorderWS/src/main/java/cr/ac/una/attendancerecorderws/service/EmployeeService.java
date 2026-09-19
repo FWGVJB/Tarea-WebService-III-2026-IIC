@@ -62,6 +62,15 @@ public class EmployeeService {
             if (employee == null) {
                 return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No se encontró el empleado a eliminar.", "deleteEmployee NoResultException");
             }
+            Long shifts = em.createNamedQuery("Shift.countByEmployee", Long.class)
+                    .setParameter("employeeId", id)
+                    .getSingleResult();
+            if (shifts > 0) {
+                employee.setActive("F");
+                em.merge(employee);
+                em.flush();
+                return new Response(true, ResponseCode.SUCCESS, "El empleado tiene marcas registradas, por lo tanto se inactivó en lugar de eliminarse.", "");
+            }
             em.remove(employee);
             em.flush();
             return new Response(true, ResponseCode.SUCCESS, "", "");

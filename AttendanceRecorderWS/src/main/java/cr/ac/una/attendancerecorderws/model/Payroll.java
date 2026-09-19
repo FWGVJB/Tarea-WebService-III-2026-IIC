@@ -25,7 +25,8 @@ import java.util.Objects;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Payroll.findAll", query = "SELECT p FROM Payroll p"),
-    @NamedQuery(name = "Payroll.findById", query = "SELECT p FROM Payroll p WHERE p.id = :id")
+    @NamedQuery(name = "Payroll.findById", query = "SELECT p FROM Payroll p WHERE p.id = :id"),
+    @NamedQuery(name = "Payroll.findByMonthAndYear", query = "SELECT p FROM Payroll p WHERE (:month IS NULL OR p.month = :month) AND (:year IS NULL OR p.year = :year)")
 })
 public class Payroll implements Serializable {
 
@@ -136,6 +137,18 @@ public class Payroll implements Serializable {
 
     public void setDetails(List<PayrollDetail> details) {
         this.details = details;
+    }
+    
+    public String getPeriod() {
+        String[] meses = {
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        };
+        int mesIndex = this.month - 1;
+        if (mesIndex < 0 || mesIndex > 11) {
+            return "";
+        }
+        return meses[mesIndex] + " del " + this.year;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package cr.ac.una.attendancerecorderws.model;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.Objects;
 
 public class ShiftDtoWs implements Serializable {
@@ -79,6 +80,13 @@ public class ShiftDtoWs implements Serializable {
 
     public void setModified(Boolean modified) {
         this.modified = modified;
+    }
+    
+    public double getHoursInPeriod() {
+        if (entryRecord == null || exitRecord == null) return -1;
+        long minutes = Duration.between(entryRecord.getTimestamp(), exitRecord.getTimestamp()).toMinutes();
+        int blocksOf30Minutes = Math.round(minutes / 30.0f);
+        return blocksOf30Minutes / 2.0;
     }
 
     @Override

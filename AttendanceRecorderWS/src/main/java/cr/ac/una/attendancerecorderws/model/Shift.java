@@ -24,6 +24,7 @@ import java.util.Objects;
     @NamedQuery(name = "Shift.findAll", query = "SELECT s FROM Shift s"),
     @NamedQuery(name = "Shift.findById", query = "SELECT s FROM Shift s WHERE s.id = :id"),
     @NamedQuery(name = "Shift.findByEmployee", query = "SELECT s FROM Shift s WHERE s.employee = :employee"),
+    @NamedQuery(name = "Shift.countByEmployee", query = "SELECT COUNT(s) FROM Shift s WHERE s.employee.id = :employeeId"),
     @NamedQuery(name = "Shift.search", query = "SELECT s FROM Shift s "
         + "LEFT JOIN s.entryRecord entryRecord "
         + "LEFT JOIN s.exitRecord exitRecord "
@@ -57,10 +58,6 @@ public class Shift implements Serializable {
     @JoinColumn(name = "SHIFT_EMPLOYEE", referencedColumnName = "EMPLOYEE_ID")
     @ManyToOne(optional = false)
     private Employee employee;
-    
-    @JoinColumn(name = "SHIFT_SHIFT_REPORT", referencedColumnName = "SHIFT_REPORT_ID")
-    @ManyToOne
-    private ShiftReport shiftReport;
     
     @JoinColumn(name = "SHIFT_EXIT_TIME_RECORD", referencedColumnName = "TIME_RECORD_ID")
     @ManyToOne
@@ -119,14 +116,6 @@ public class Shift implements Serializable {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
-    }
-
-    public ShiftReport getShiftReport() {
-        return shiftReport;
-    }
-
-    public void setShiftReport(ShiftReport shiftReport) {
-        this.shiftReport = shiftReport;
     }
 
     public TimeRecord getExitRecord() {

@@ -1,45 +1,127 @@
 package cr.ac.una.attendancerecorderws.util;
 
 import cr.ac.una.attendancerecorderws.model.EmployeeDtoWs;
+import cr.ac.una.attendancerecorderws.model.PayrollDtoWs;
+import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.util.JRLoader;
 
+@Singleton
+@Startup
 public class JasperGenerator {
-    
-    private static final String CHECK_ICON_PATH = "/cr/ac/una/attendancerecorderws/resource/checkIcon.png", WINDOW_LOGO_PATH = "/cr/ac/una/attendancerecorderws/resource/windowLogo.jpg";
-    
-    public static byte[] generateEmployeeInformationReport(List<EmployeeDtoWs> employeeDtosWs) throws JRException {
-        InputStream jasperStream = JasperGenerator.class.getResourceAsStream("/cr/ac/una/attendancerecorderws/jasper/relojUNA_Employee_Information_Report.jasper");
-        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
 
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(employeeDtosWs);
-        
-        Map<String, Object> parameters = new HashMap<>();
-        InputStream windowLogo = JasperGenerator.class.getResourceAsStream(WINDOW_LOGO_PATH);
-        parameters.put("WINDOW_LOGO", windowLogo);
-        
-        try {
-            InputStream checkIconStream = JasperGenerator.class.getResourceAsStream(CHECK_ICON_PATH);
-            byte[] checkIconBytes;
-            checkIconBytes = checkIconStream.readAllBytes();
-            parameters.put("CHECK_ICON", checkIconBytes);
+    private static final Logger LOG = Logger.getLogger(JasperGenerator.class.getName());
+
+    private static final String CHECK_ICON_PATH = "/cr/ac/una/attendancerecorderws/resource/checkIcon.png";
+    private static final String WINDOW_LOGO_PATH = "/cr/ac/una/attendancerecorderws/resource/windowLogo.png";
+    private static final String EMPLOYEE_INFORMATION_REPORT_PATH = "/cr/ac/una/attendancerecorderws/jasper/relojUNA_Employee_Information_Report.jrxml";
+    private static final String SHIFT_REPORT_PATH = "/cr/ac/una/attendancerecorderws/jasper/relojUNA_Shifts_Report.jrxml";
+    private static final String PAYROLL_REPORT_PATH = "/cr/ac/una/attendancerecorderws/jasper/relojUNA_Payroll_Report.jrxml";
+
+    private byte[] checkIconBytes, windowLogoBytes;
+    private JasperReport employeeReport, shiftReport, payrollReport;
+
+    public JasperGenerator() {
+    }
+
+    @PostConstruct
+    private void init() {
+        long start = System.currentTimeMillis();
+        this.checkIconBytes = readResourceBytes(CHECK_ICON_PATH);
+        this.windowLogoBytes = readResourceBytes(WINDOW_LOGO_PATH);
+        this.employeeReport = loadReport(EMPLOYEE_INFORMATION_REPORT_PATH);
+        this.shiftReport = loadReport(SHIFT_REPORT_PATH);
+        this.payrollReport = loadReport(PAYROLL_REPORT_PATH);
+        long elapsed = System.currentTimeMillis() - start;
+        LOG.log(Level.INFO, "JasperGenerator inicializado en {0} ms.", elapsed);
+    }
+
+    private static byte[] readResourceBytes(String path) {
+        try (InputStream is = JasperGenerator.class.getResourceAsStream(path)) {
+            if (is == null) {
+                throw new IllegalStateException("No se encontró el recurso: " + path);
+            }
+            return is.readAllBytes();
         } catch (IOException ex) {
-            System.getLogger(JasperGenerator.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            return null;
+            LOG.log(Level.SEVERE, "No se pudo leer el recurso " + path, ex);
+            throw new IllegalStateException("No se pudo leer el recurso " + path, ex);
         }
-        
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+    }
+
+    private static JasperReport loadReport(String path) {
+        try (InputStream is = JasperGenerator.class.getResourceAsStream(path)) {
+            if (is == null) {
+                throw new IllegalStateException("No se encontró el reporte: " + path);
+            }
+            return JasperCompileManager.compileReport(is);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "No se pudo cargar/compilar el reporte " + path, ex);
+            throw new IllegalStateException("No se pudo cargar el reporte " + path, ex);
+        }
+    }
+
+    public byte[] generateEmployeeInformationReport(List<EmployeeDtoWs> employeeDtosWs) throws JRException {
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(employeeDtosWs);
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("WINDOW_LOGO", new ByteArrayInputStream(windowLogoBytes));
+        parameters.put("CHECK_ICON", checkIconBytes);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(employeeReport, parameters, dataSource);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+        return outputStream.toByteArray();
+    }
+
+    public byte[] generateShiftReport(List<ShiftDtoWs> shifts, LocalDate startDate, LocalDate endDate,
+            int timeRecordsAmount, int employeesAmount, double totalHours, String types) throws JRException {
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(shifts);
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("WINDOW_LOGO", new ByteArrayInputStream(windowLogoBytes));
+        parameters.put("START_DATE", startDate != null ? Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()) : null);
+        parameters.put("END_DATE", endDate != null ? Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()) : null);
+        parameters.put("TIME_RECORDS_AMOUNT", timeRecordsAmount);
+        parameters.put("EMPLOYEES_AMOUNT", employeesAmount);
+        parameters.put("WORKED_HOURS", totalHours);
+        parameters.put("TYPES", types);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(shiftReport, parameters, dataSource);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+        return outputStream.toByteArray();
+    }
+    
+    public byte[] generatePayrollReport(PayrollDtoWs payroll) throws JRException {
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(payroll.getDetails());
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("WINDOW_LOGO", new ByteArrayInputStream(windowLogoBytes));
+        parameters.put("PERIOD", payroll.getPeriod());
+        parameters.put("EMPLOYEES_AMOUNT", payroll.getDetails().size());
+        parameters.put("TOTAL_PAYMENT", payroll.getTotalPayment());
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(payrollReport, parameters, dataSource);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
         return outputStream.toByteArray();

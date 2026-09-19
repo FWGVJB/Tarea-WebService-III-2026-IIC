@@ -1,0 +1,165 @@
+<!-- Created with Jaspersoft Studio version 7.0.8.final using JasperReports Library version 7.0.8-6f896111  -->
+<jasperReport name="relojUNA_Payroll_Report" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3a9c1e70-5b2d-4f8e-9a1c-8b7d6e5f4a3c">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="WINDOW_LOGO" class="java.io.InputStream"/>
+	<parameter name="PERIOD" class="java.lang.String"/>
+	<parameter name="EMPLOYEES_AMOUNT" class="java.lang.Integer"/>
+	<parameter name="TOTAL_PAYMENT" class="java.lang.Double"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="employee.fol" class="java.lang.String"/>
+	<field name="employee.idCard" class="java.lang.String"/>
+	<field name="hourlyWage" class="java.lang.Double"/>
+	<field name="ordinaryHours" class="java.lang.Double"/>
+	<field name="extraHours" class="java.lang.Double"/>
+	<field name="doubleHours" class="java.lang.Double"/>
+	<field name="monthlySalary" class="java.lang.Double"/>
+	<field name="totalHours" class="java.lang.Double"/>
+	<background splitType="Stretch"/>
+	<title height="111" splitType="Stretch">
+		<element kind="image" uuid="5140b320-5914-4fff-98b6-94af48b9c5c5" x="10" y="10" width="50" height="50">
+			<expression><![CDATA[$P{WINDOW_LOGO}]]></expression>
+		</element>
+		<element kind="textField" uuid="7f96a5e2-bc63-4cc6-9b74-eddf6e38e4de" x="0" y="80" width="555" height="20" fontName="Serif" fontSize="14.0" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Fecha de generación: " + (new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(new java.util.Date()))]]></expression>
+		</element>
+		<element kind="staticText" uuid="61ac5dc8-714a-4c88-b7be-7336a6528fc7" x="80" y="40" width="475" height="20" fontName="Serif" fontSize="15.0" hTextAlign="Left" vTextAlign="Bottom">
+			<text><![CDATA[REPORTE DE PLANILLA]]></text>
+		</element>
+		<element kind="staticText" uuid="c565927b-2ee4-445d-9317-497f8d59454e" x="80" y="10" width="475" height="30" fontName="Serif" fontSize="22.0" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[HYPERBOREA, S.A.]]></text>
+		</element>
+		<element kind="line" uuid="55d12c11-07f4-4faa-a83d-248936e3a3c5" x="0" y="70" width="555" height="1" forecolor="#163A4B"/>
+	</title>
+	<pageHeader height="109" splitType="Stretch">
+		<element kind="textField" uuid="e5f6a7b8-c9d0-4123-def0-123456789012" x="0" y="0" width="555" height="20" fontName="Serif" fontSize="14.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Periodo: " + $P{PERIOD}]]></expression>
+		</element>
+		<element kind="line" uuid="6948de68-18d9-463f-bb90-9639eaedaf30" x="0" y="29" width="555" height="1" forecolor="#163A4B"/>
+		<element kind="staticText" uuid="a7b8c9d0-e1f2-4345-f012-345678901234" x="0" y="39" width="555" height="30" forecolor="#DFF7FC" backcolor="#163A4B" mode="Opaque" fontName="Serif" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[DETALLE DE PLANILLA]]></text>
+		</element>
+		<element kind="staticText" uuid="86a02103-a08c-47d0-8e82-2e648e70a1b4" x="0" y="69" width="50" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Folio]]></text>
+		</element>
+		<element kind="staticText" uuid="ca4d394f-a6fd-48cd-921d-5eefae2d6a46" x="50" y="69" width="74" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Cédula]]></text>
+		</element>
+		<element kind="staticText" uuid="b8c9d0e1-f2a3-4456-0123-456789012345" x="124" y="69" width="66" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Salario por hora]]></text>
+		</element>
+		<element kind="staticText" uuid="c9d0e1f2-a3b4-4567-1234-567890123456" x="190" y="69" width="65" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Horas ordinarias]]></text>
+		</element>
+		<element kind="staticText" uuid="d0e1f2a3-b4c5-4678-2345-678901234567" x="255" y="69" width="65" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Horas extra]]></text>
+		</element>
+		<element kind="staticText" uuid="e1f2a3b4-c5d6-4789-3456-789012345678" x="320" y="69" width="65" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Horas dobles]]></text>
+		</element>
+		<element kind="staticText" uuid="f2a3b4c5-d6e7-4890-4567-890123456789" x="450" y="69" width="105" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Salario mensual]]></text>
+		</element>
+		<element kind="staticText" uuid="2d921a13-78b5-468d-a9a7-f5469ebb3815" x="385" y="69" width="65" height="40" forecolor="#163A4B" backcolor="#DFF7FC" mode="Opaque" fontName="Serif" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="0.5" lineColor="#163A4B"/>
+			</box>
+			<text><![CDATA[Horas totales]]></text>
+		</element>
+	</pageHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="textField" uuid="ba18ccda-fb53-4f18-a273-63f2cae71438" x="0" y="0" width="50" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{employee.fol}]]></expression>
+			</element>
+			<element kind="textField" uuid="bb05c3d4-2f0a-4c7e-badd-bed4fe98fd18" x="50" y="0" width="74" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{employee.idCard}]]></expression>
+			</element>
+			<element kind="textField" uuid="9880b748-bd18-48d1-b2bd-afbcfbd2f89e" x="124" y="0" width="66" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{hourlyWage} != null ? String.format("₡%,.2f", $F{hourlyWage}) : ""]]></expression>
+			</element>
+			<element kind="textField" uuid="74327594-3b6b-4e25-b6d2-f4e3fee883f8" x="190" y="0" width="65" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{ordinaryHours} != null ? String.format("%.2f h", $F{ordinaryHours}) : ""]]></expression>
+			</element>
+			<element kind="textField" uuid="14456368-4ef1-47bd-a2ca-568fd30d8753" x="255" y="0" width="65" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{extraHours} != null ? String.format("%.2f h", $F{extraHours}) : ""]]></expression>
+			</element>
+			<element kind="textField" uuid="32c4d5e6-f7a8-4192-ab1c-2e3f4a5b6c7d" x="320" y="0" width="65" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{doubleHours} != null ? String.format("%.2f h", $F{doubleHours}) : ""]]></expression>
+			</element>
+			<element kind="textField" uuid="43d5e6f7-a8b9-42a3-bc2d-3f4a5b6c7d8e" x="450" y="0" width="105" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{monthlySalary} != null ? String.format("₡%,.2f", $F{monthlySalary}) : ""]]></expression>
+			</element>
+			<element kind="textField" uuid="6a549035-1d7a-459f-b311-97d3a9f89f4b" x="385" y="0" width="65" height="20" fontName="Serif" fontSize="8.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<box padding="1">
+					<pen lineWidth="0.25" lineColor="#B0B0B0"/>
+				</box>
+				<expression><![CDATA[$F{totalHours} != null ? String.format("%.2f h", $F{totalHours}) : ""]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="30">
+		<element kind="line" uuid="a5b6c7d8-e9f0-4123-7890-123456789012" x="0" y="10" width="555" height="1"/>
+		<element kind="textField" uuid="b6c7d8e9-f0a1-4234-8901-234567890123" x="1" y="11" width="554" height="18" fontName="Serif" fontSize="12.0" linkType="None" linkTarget="Self" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+	<summary height="110" splitType="Stretch">
+		<element kind="line" uuid="f8a9b0c1-d2e3-4456-0123-456789012345" x="0" y="-1" width="555" height="1" forecolor="#163A4B"/>
+		<element kind="staticText" uuid="a9b0c1d2-e3f4-4567-1234-567890123456" x="0" y="10" width="555" height="30" forecolor="#DFF7FC" backcolor="#163A4B" mode="Opaque" fontName="Serif" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+			<box padding="1"/>
+			<text><![CDATA[RESUMEN DE PLANILLA]]></text>
+		</element>
+		<element kind="textField" uuid="b0c1d2e3-f4a5-4678-2345-678901234567" x="0" y="50" width="555" height="20" fontName="Serif" fontSize="12.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Empleados en planilla: " + ($P{EMPLOYEES_AMOUNT} != null ? $P{EMPLOYEES_AMOUNT}  : 0)]]></expression>
+		</element>
+		<element kind="line" uuid="e3f4a5b6-c7d8-4901-5678-901234567890" x="0" y="109" width="555" height="1" forecolor="#163A4B"/>
+		<element kind="textField" uuid="f4a5b6c7-d8e9-4012-6789-012345678901" x="0" y="86" width="555" height="23" fontName="Serif" fontSize="14.0" bold="true" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["TOTAL PLANILLA: " + ($P{TOTAL_PAYMENT} != null ? String.format("₡%,.2f", $P{TOTAL_PAYMENT}) : "₡0.00")]]></expression>
+		</element>
+	</summary>
+</jasperReport>

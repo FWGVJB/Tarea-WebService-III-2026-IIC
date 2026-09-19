@@ -10,7 +10,9 @@ public class PayrollDetailDtoWs implements Serializable {
     private Long id;
     private EmployeeDtoWs employee;
     private Double hourlyWage;
-    private Double workedHours;
+    private Double ordinaryHours;
+    private Double extraHours;
+    private Double doubleHours;
     private Double monthlySalary;
     private Long version;
     private Boolean modified;
@@ -26,7 +28,9 @@ public class PayrollDetailDtoWs implements Serializable {
             this.employee = new EmployeeDtoWs(detail.getEmployee());
         }
         this.hourlyWage = detail.getHourlyWage();
-        this.workedHours = detail.getWorkedHours();
+        this.ordinaryHours = detail.getOrdinaryHours();
+        this.extraHours = detail.getExtraHours();
+        this.doubleHours = detail.getDoubleHours();
         this.monthlySalary = detail.getMonthlySalary();
         this.version = detail.getVersion();
     }
@@ -54,13 +58,29 @@ public class PayrollDetailDtoWs implements Serializable {
     public void setHourlyWage(Double hourlyWage) {
         this.hourlyWage = hourlyWage;
     }
-
-    public Double getWorkedHours() {
-        return workedHours;
+    
+    public Double getOrdinaryHours() {
+        return ordinaryHours;
     }
 
-    public void setWorkedHours(Double workedHours) {
-        this.workedHours = workedHours;
+    public void setOrdinaryHours(Double ordinaryHours) {
+        this.ordinaryHours = ordinaryHours;
+    }
+    
+    public Double getExtraHours() {
+        return extraHours;
+    }
+
+    public void setExtraHours(Double extraHours) {
+        this.extraHours = extraHours;
+    }
+    
+    public Double getDoubleHours() {
+        return doubleHours;
+    }
+
+    public void setDoubleHours(Double doubleHours) {
+        this.doubleHours = doubleHours;
     }
 
     public Double getMonthlySalary() {
@@ -85,6 +105,13 @@ public class PayrollDetailDtoWs implements Serializable {
 
     public void setModified(Boolean modified) {
         this.modified = modified;
+    }
+    
+    public Double getTotalHours() {
+        double ordinary = ordinaryHours != null ? ordinaryHours : 0.0;
+        double extra = extraHours != null ? extraHours : 0.0;
+        double doubleH = doubleHours != null ? doubleHours : 0.0;
+        return ordinary + extra + doubleH;
     }
 
     @Override
