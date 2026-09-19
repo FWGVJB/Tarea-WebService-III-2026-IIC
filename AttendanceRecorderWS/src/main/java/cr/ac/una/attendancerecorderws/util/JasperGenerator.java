@@ -3,6 +3,9 @@ package cr.ac.una.attendancerecorderws.util;
 import cr.ac.una.attendancerecorderws.model.EmployeeDtoWs;
 import cr.ac.una.attendancerecorderws.model.PayrollDtoWs;
 import cr.ac.una.attendancerecorderws.model.ShiftDtoWs;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,7 +26,9 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-public final class JasperGenerator {
+@Singleton
+@Startup
+public class JasperGenerator {
 
     private static final Logger LOG = Logger.getLogger(JasperGenerator.class.getName());
 
@@ -33,30 +38,22 @@ public final class JasperGenerator {
     private static final String SHIFT_REPORT_PATH = "/cr/ac/una/attendancerecorderws/jasper/relojUNA_Shifts_Report.jrxml";
     private static final String PAYROLL_REPORT_PATH = "/cr/ac/una/attendancerecorderws/jasper/relojUNA_Payroll_Report.jrxml";
 
-    private static volatile JasperGenerator instance;
+    private byte[] checkIconBytes, windowLogoBytes;
+    private JasperReport employeeReport, shiftReport, payrollReport;
 
-    private final byte[] checkIconBytes, windowLogoBytes;
-    private final JasperReport employeeReport, shiftReport, payrollReport;
+    public JasperGenerator() {
+    }
 
-    private JasperGenerator() {
+    @PostConstruct
+    private void init() {
+        long start = System.currentTimeMillis();
         this.checkIconBytes = readResourceBytes(CHECK_ICON_PATH);
         this.windowLogoBytes = readResourceBytes(WINDOW_LOGO_PATH);
         this.employeeReport = loadReport(EMPLOYEE_INFORMATION_REPORT_PATH);
         this.shiftReport = loadReport(SHIFT_REPORT_PATH);
         this.payrollReport = loadReport(PAYROLL_REPORT_PATH);
-    }
-
-    public static JasperGenerator getInstance() {
-        JasperGenerator result = instance;
-        if (result == null) {
-            synchronized (JasperGenerator.class) {
-                result = instance;
-                if (result == null) {
-                    instance = result = new JasperGenerator();
-                }
-            }
-        }
-        return result;
+        long elapsed = System.currentTimeMillis() - start;
+        LOG.log(Level.INFO, "JasperGenerator inicializado en {0} ms.", elapsed);
     }
 
     private static byte[] readResourceBytes(String path) {
@@ -97,16 +94,17 @@ public final class JasperGenerator {
     }
 
     public byte[] generateShiftReport(List<ShiftDtoWs> shifts, LocalDate startDate, LocalDate endDate,
-            int timeRecordsAmount, int employeesAmount, double totalHours) throws JRException {
+            int timeRecordsAmount, int employeesAmount, double totalHours, String types) throws JRException {
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(shifts);
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("WINDOW_LOGO", new ByteArrayInputStream(windowLogoBytes));
         parameters.put("START_DATE", startDate != null ? Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()) : null);
         parameters.put("END_DATE", endDate != null ? Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()) : null);
-        parameters.put("TIME_RECORDS_AMOUNT", (double) timeRecordsAmount);
-        parameters.put("EMPLOYEES_AMOUNT", (double) employeesAmount);
+        parameters.put("TIME_RECORDS_AMOUNT", timeRecordsAmount);
+        parameters.put("EMPLOYEES_AMOUNT", employeesAmount);
         parameters.put("WORKED_HOURS", totalHours);
+        parameters.put("TYPES", types);
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(shiftReport, parameters, dataSource);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

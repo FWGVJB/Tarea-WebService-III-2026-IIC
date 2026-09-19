@@ -33,12 +33,13 @@ public class JasperWS {
             @WebParam(name = "shiftIdList") List<Long> shiftIdList,
             @WebParam(name = "timeRecordsAmount") int timeRecordsAmount,
             @WebParam(name = "employeesAmount") int employeesAmount,
-            @WebParam(name = "totalHours") double totalHours) {
+            @WebParam(name = "totalHours") double totalHours,
+            @WebParam(name = "types") String types) {
 
         LocalDate parsedStart = startDate != null ? LocalDate.parse(startDate) : null;
         LocalDate parsedEnd = endDate != null ? LocalDate.parse(endDate) : null;
 
-        Response response = reportService.generateShiftReport(parsedStart, parsedEnd, shiftIdList, timeRecordsAmount, employeesAmount, totalHours);
+        Response response = reportService.generateShiftReport(parsedStart, parsedEnd, shiftIdList, timeRecordsAmount, employeesAmount, totalHours, types);
         JasperResponseWrapper wrapper = new JasperResponseWrapper(response.getStatus(), response.getResponseCode(), response.getMessage());
         if (Boolean.TRUE.equals(response.getStatus())) {
             wrapper.setPdfReport((byte[]) response.getResult("PdfReport"));
