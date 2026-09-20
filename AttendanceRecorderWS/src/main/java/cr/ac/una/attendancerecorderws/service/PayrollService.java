@@ -59,9 +59,9 @@ public class PayrollService {
 
     public Response generatePayroll(Integer month, Integer year) {
         try {
-            List<Employee> employees = em.createNamedQuery("Employee.findAll", Employee.class).getResultList();
+            List<Employee> employees = em.createNamedQuery("Employee.findAllActive", Employee.class).getResultList();
             if (employees.isEmpty()) {
-                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No hay empleados para generar la planilla.", "");
+                return new Response(false, ResponseCode.NOT_FOUND_ERROR, "No hay empleados activos para generar la planilla.", "");
             }
 
             List<Payroll> existingPayrolls = em.createQuery("SELECT p FROM Payroll p WHERE p.month = :month AND p.year = :year", Payroll.class)

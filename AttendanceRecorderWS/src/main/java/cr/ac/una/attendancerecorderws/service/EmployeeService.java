@@ -27,6 +27,18 @@ public class EmployeeService {
 
     public Response saveEmployee(EmployeeDtoWs employeeDto) {
         try {
+            List<Employee> existingByFol = em.createNamedQuery("Employee.findByFol", Employee.class).setParameter("fol", employeeDto.getFol()).getResultList();
+            if (!existingByFol.isEmpty()) {
+                return new Response(false, ResponseCode.INTERNAL_ERROR,
+                        "Ya existe un empleado registrado con el folio ingresado.",
+                        "saveEmployee Folio duplicado");
+            }
+            List<Employee> existingByIdCard = em.createNamedQuery("Employee.findByIdCard", Employee.class).setParameter("idCard", employeeDto.getIdCard()).getResultList();
+            if (!existingByIdCard.isEmpty()) {
+                return new Response(false, ResponseCode.INTERNAL_ERROR,
+                        "Ya existe un empleado registrado con la cédula ingresada.",
+                        "saveEmployee Cédula duplicada");
+            }
             Employee employee = new Employee(employeeDto);
             em.persist(employee);
             em.flush();

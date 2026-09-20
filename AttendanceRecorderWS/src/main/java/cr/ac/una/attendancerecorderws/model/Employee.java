@@ -26,7 +26,9 @@ import java.util.Objects;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e"),
+    @NamedQuery(name = "Employee.findAllActive", query = "SELECT e FROM Employee e WHERE e.active = 'T'"),
     @NamedQuery(name = "Employee.findById", query = "SELECT e FROM Employee e WHERE e.id = :id"),
+    @NamedQuery(name = "Employee.findByIdCard", query = "SELECT e FROM Employee e WHERE e.idCard = :idCard"),
     @NamedQuery(name = "Employee.findByFol", query = "SELECT e FROM Employee e WHERE e.fol = :fol"),
     @NamedQuery(name = "Employee.search", query = "SELECT e FROM Employee e WHERE "
             + "UPPER(e.idCard) LIKE :idCard AND "
