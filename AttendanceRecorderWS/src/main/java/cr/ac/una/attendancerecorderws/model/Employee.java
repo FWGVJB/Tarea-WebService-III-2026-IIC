@@ -1,6 +1,7 @@
 package cr.ac.una.attendancerecorderws.model;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.Cacheable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Cacheable(false)
 @Table(name = "RELOJUNA_EMPLOYEES")
 @XmlRootElement
 @NamedQueries({
