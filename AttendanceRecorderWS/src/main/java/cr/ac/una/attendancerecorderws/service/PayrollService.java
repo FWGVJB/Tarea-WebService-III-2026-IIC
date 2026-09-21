@@ -144,7 +144,7 @@ public class PayrollService {
                 detail.setExtraHours(extraHours);
                 detail.setDoubleHours(doubleHours);
 
-                double monthlySalary = (ordinaryHours + extraHours + doubleHours * 2.0) * hourlyWage;
+                double monthlySalary = (ordinaryHours + extraHours + doubleHours * DOUBLE_MULTIPLIER) * hourlyWage;
                 detail.setMonthlySalary(monthlySalary);
 
                 details.add(detail);
@@ -317,6 +317,7 @@ public class PayrollService {
     }
 
     private boolean isNightShift(LocalDateTime entry, LocalDateTime exit) {
+        if (!entry.toLocalDate().isEqual(exit.toLocalDate())) { return true; }
         boolean startsBeforeDayShift = entry.toLocalTime().isBefore(DAY_SHIFT_START);
         boolean endsAfterDayShift = exit.toLocalTime().isAfter(DAY_SHIFT_END);
         return startsBeforeDayShift || endsAfterDayShift;
